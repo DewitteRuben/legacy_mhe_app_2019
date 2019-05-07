@@ -1,6 +1,4 @@
-# SPA APP v0.0.1 #
-Hydration app for SPA (BBDO), as a campaign for "Tournée Minérale".
-
+# mhe_app_2019 #
 
 # Table of contents #
 
@@ -73,21 +71,3 @@ We follow these naming conventions:
 * **bugfix/***: For bugs that are logged during testing.
 * **hotfix/***: Only for hotfixing critical bugs from the `master`-branch.
 
-
-## Project Context ##
-
-This project is a District01 team effort.
-
-### Details ###
-
-* **Client**: SPA (BBDO)
-* **Start**: 20/11/2018
-
-### Team ###
-
-* [Enzo Eghermanne - Studio Hyperdrive](enzo.eghermanne@studiohyperdrive.be)
-    * **Function**: Developer
-    * **Period**: November 2018 -> Current
-* [Andry Charlier - Studio Hyperdrive](andry.charlier@studiohyperdrive.be)
-    * **Function**: Developer
-    * **Period**: November 2018 -> Current
