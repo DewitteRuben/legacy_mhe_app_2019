@@ -1,0 +1,52 @@
+{
+  "testId": "Unique Test ID",
+  "testResult": "test result",
+  "year": "year",
+  "correct": "correct",
+  "wrong": "wrong",
+  "total": "total",
+  "testNotDoneYet": "test not done yet.",
+  "answers": "answers",
+  "photo": "photo",
+  "responseTime": "response time",
+  "seconds" : "seconds",
+  "report": "report",
+  "noAnswerGiven": "Test subject did not answer",
+  "totalTime": "Total time for phase",
+  "secondes": "seconds",
+  "answerTypes": {
+    "clientAnswer": "client answer",
+    "correctAnswer": "correct answer"
+  },
+  "sets": {
+    "uniqueSet": "unique set",
+    "groupedSet": "grouped set",
+    "abstractSet": "abstract set"
+  },
+  "clientInfo": {
+    "client": "client",
+    "age": "age",
+    "schooledTill": "schooled till",
+    "schooledFor": "schooled for",
+    "gender": "gender",
+    "notes": "notes",
+    "noNotes" : "geen notities gegeven",
+    "genders" : {
+      "m": "Male",
+      "v": "Female",
+      "a": "Other"
+    }
+  },
+  "scores": "scores",
+  "phases": [
+    {
+      "name": "processing phase"
+    },
+    {
+      "name": "immediate recognition phase"
+    },
+    {
+      "name": "delayed recognition phase"
+    }
+  ]
+}

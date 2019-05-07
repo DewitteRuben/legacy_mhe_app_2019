@@ -1,0 +1,5 @@
+{
+    "editor.scrollBeyondLastLine": false,
+    "tslint.jsEnable": true,
+    "editor.codeLens": false
+}

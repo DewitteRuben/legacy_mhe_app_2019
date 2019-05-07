@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>logFormatVersion</key>
+	<integer>10</integer>
+	<key>logs</key>
+	<dict>
+		<key>D796F6D7-F39F-47FF-B8F7-B069A4C4A0EE</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>D796F6D7-F39F-47FF-B8F7-B069A4C4A0EE.xcactivitylog</string>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>mentalhealth project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>mentalhealth</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building project mentalhealth with scheme mentalhealth and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>578922396.52110505</real>
+			<key>timeStoppedRecording</key>
+			<real>578922406.40433097</real>
+			<key>title</key>
+			<string>Building project mentalhealth with scheme mentalhealth and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>D796F6D7-F39F-47FF-B8F7-B069A4C4A0EE</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

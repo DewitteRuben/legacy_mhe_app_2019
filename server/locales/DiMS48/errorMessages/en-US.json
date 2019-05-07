@@ -1,0 +1,32 @@
+{
+    "global": "global",
+    "reasons" : {
+        "internalServerError": "internal server error",
+        "invalidIdSupplied": "invalid id supplied",
+        "invalidValueSupplied": "invalid value supplied",
+        "documentUpdated": "document updated"
+    },
+    "phases": {
+        "couldNotGetInitial": "Failed to get initial test data",
+        "cloudNotGetPart2": "Failed to get part 2 of the test data"
+    },
+    "results": {
+        "couldNotGetResults": "Failed to get results",
+        "couldNotGetResult": "Could not get that result",
+        "couldNotSaveResult": "Could not save that result",
+        "couldNotAppendResult": "Could not append that result",
+        "updatedDocument": "Document successfully updated",
+        "cloudNotUpdate": "Could not update the result ",
+        "couldNotAppend": "Could not append result"
+    },
+    "fileGenerators": {
+        "couldNotGeneratePDF": "Could not generate PDF",
+        "couldNotGenerateExcel": "Could not generate Excel"
+    },
+    "dues": {
+        "internalServerError": " due to an internal server error",
+        "invalidIdSupplied": " due to an invalid id that was supplied",
+        "invalidValueSuppliedFor": " due to the invalid id supplied for ",
+        "answersPhase3AlreadyPresent": " because the results for phase 3 are already present on that test"
+    }
+}
