@@ -8,7 +8,6 @@ declare module "*.json" {
 }
 
 declare var global: any;
-
 declare module "react-native-vector-icons/FontAwesome";
 declare module "react-navigation-tabs";
 declare module "react-native-canvas";

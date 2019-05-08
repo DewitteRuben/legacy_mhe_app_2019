@@ -13,6 +13,7 @@
     "test:ci": "jest --runInBand"
   },
   "dependencies": {
+    "@react-native-community/netinfo": "^2.0.9",
     "lodash.difference": "^4.5.0",
     "lodash.get": "^4.4.2",
     "native-base": "^2.12.1",
@@ -36,7 +37,8 @@
     "react-router-config": "^4.4.0-beta.6",
     "react-router-native": "^4.3.0",
     "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.2.1",
@@ -52,6 +54,7 @@
     "@types/react-router-native": "^4.2.3",
     "@types/react-test-renderer": "^16.0.3",
     "@types/remote-redux-devtools": "^0.5.3",
+    "@types/uuid": "^3.4.4",
     "babel-jest": "23.6.0",
     "husky": "^1.3.0",
     "jest": "23.6.0",

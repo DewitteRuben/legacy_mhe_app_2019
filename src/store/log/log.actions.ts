@@ -1,12 +1,11 @@
-import { AsyncStorage } from "react-native";
 import { ActionCreator } from "redux";
 import { ThunkAction } from "redux-thunk";
-import MoodItem from "../../components/MoodItem";
 import {
   addMoodEntry as postMoodEntry,
   getMoodEntriesByUserId
 } from "../../services/api";
 import {
+  clearLocalMoodEntries,
   getLocalMoodEntries,
   setLocalMoodEntry
 } from "../../services/localStorage";
@@ -69,17 +68,16 @@ const setMoodEntries: ActionCreator<SetMoodEntriesAction> = (
   type: LogActionTypes.SET_MOOD_ENTRIES
 });
 
-const fetchMoodEntries = (): ThunkResult<void> => async (
-  dispatch,
-  getState
-) => {
+const fetchMoodEntries = (): ThunkResult<void> => async dispatch => {
   dispatch(fetchMoodEntriesPending());
-
-  // Check AsyncStorage For Data
-  const localMoodEntries = await getLocalMoodEntries();
-
+  clearLocalMoodEntries();
+  let moodEntries = [];
   try {
-    const moodEntries = await getMoodEntriesByUserId("userid");
+    if (global.isConnected) {
+      moodEntries = await getMoodEntriesByUserId("userid");
+    } else {
+      moodEntries = await getLocalMoodEntries();
+    }
     dispatch(setMoodEntries(moodEntries));
   } catch (error) {
     dispatch(fetchMoodEntriesError(error));
@@ -100,10 +98,16 @@ const fetchAddMoodEntry = (
     note
   } as MoodEntry;
   dispatch(addMoodEntry(moodEntry));
+
+  const { moodEntries } = getState().log;
+  console.log(moodEntries);
   try {
-    const response = await postMoodEntry(userId, mood, date, note);
+    await setLocalMoodEntry([...moodEntries, moodEntry]);
+    if (global.isConnected) {
+      await postMoodEntry(userId, mood, date, note);
+    }
     dispatch(fetchMoodEntriesSuccess());
-    return Promise.resolve(response);
+    return Promise.resolve();
   } catch (error) {
     dispatch(fetchMoodEntriesError(error));
     return Promise.reject(error);

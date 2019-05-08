@@ -1,4 +1,6 @@
 import { AsyncStorage } from "react-native";
+import store from "../../store";
+import { MoodEntry } from "../../store/log";
 import { safelyParseJSON, safelyStringifyJSON } from "../../utils/json";
 
 const STORAGE_KEYS = {
@@ -6,10 +8,19 @@ const STORAGE_KEYS = {
 };
 
 export const getLocalMoodEntries = async () => {
-  return getJSON(STORAGE_KEYS.ALL_MOOD_ENTRIES);
+  const localMoodEntries = await getJSON(STORAGE_KEYS.ALL_MOOD_ENTRIES);
+  if (localMoodEntries) {
+    return localMoodEntries;
+  }
+  return [];
 };
-export const setLocalMoodEntry = async (allEntries: object) => {
-  return setJSON(allEntries, STORAGE_KEYS.ALL_MOOD_ENTRIES);
+
+export const setLocalMoodEntry = async (moodEntries: MoodEntry[]) => {
+  return setJSON(moodEntries, STORAGE_KEYS.ALL_MOOD_ENTRIES);
+};
+
+export const clearLocalMoodEntries = () => {
+  AsyncStorage.removeItem(STORAGE_KEYS.ALL_MOOD_ENTRIES);
 };
 
 const setJSON = async (object: object, key: string) => {

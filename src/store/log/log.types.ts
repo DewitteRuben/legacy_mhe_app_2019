@@ -24,6 +24,7 @@ export interface FetchMoodEntryErrorAction extends Action {
 }
 
 export interface MoodEntry {
+  entryId: string;
   userId: string;
   mood: string[];
   date: Date;

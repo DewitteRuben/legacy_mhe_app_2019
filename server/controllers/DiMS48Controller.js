@@ -2,7 +2,7 @@ let defaultModels = require('../models/defaultModels');
 const DiMS48ControllerUtils = require('../util/controller/DiMS48ControllerUtils');
 const models = require("../models/defaultModels");
 
-const getMoodEntries = function getMoodEntries() {
+const getMoodEntries = () => {
   return makeGetter(defaultModels.MoodEntry, null, true);
 };
 
@@ -10,13 +10,18 @@ const getMoodEntriesByUserId = (userId) => {
   return makeGetter(defaultModels.MoodEntry, { userId }, true);
 }
 
-const addMoodEntry = function addMoodEntry(userId, mood, date, note) {
+const getLatestMoodEntryByUserId = (userId) => {
+  return getOldestEntry(defaultModels.MoodEntry, { userId }, true);
+}
+
+const addMoodEntry = (entryId, userId, mood, date, note) => {
   return new Promise((resolve, reject) => {
     const moodEntry = {
       userId,
       mood,
       date,
       note,
+      entryId,
     }
     const newMoodEntry = new models.MoodEntry(moodEntry);
     newMoodEntry.save((err, data) => {
@@ -29,9 +34,11 @@ const addMoodEntry = function addMoodEntry(userId, mood, date, note) {
 //TODO abstract to seperate file
 //Util Functions
 const makeGetter = DiMS48ControllerUtils.makeGetter;
+const getOldestEntry = DiMS48ControllerUtils.getOldestEntry;
 
 module.exports = {
-    getMoodEntries,
-    getMoodEntriesByUserId,
-    addMoodEntry
+  getMoodEntries,
+  getMoodEntriesByUserId,
+  getLatestMoodEntryByUserId,
+  addMoodEntry
 };

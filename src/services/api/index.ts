@@ -1,3 +1,4 @@
+import uuid4 from "uuid/v4";
 import fetch from "../../utils/fetch";
 const apiUrl = "http://localhost:3000/api";
 
@@ -17,7 +18,8 @@ export function addMoodEntry(
       userId,
       mood,
       date,
-      note
+      note,
+      entryId: uuid4()
     }
   });
 }

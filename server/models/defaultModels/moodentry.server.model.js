@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const mentalHealthDatabase = require("../../util/databaseGetter").mentalHealthDatabase;
 
 const MoodEntrySchema = new Schema({
+    entryId: String,
     userId: String,
     mood: Array,
     date: Date,

@@ -34,11 +34,22 @@ router.get("/mood/:userId", async (req, res) => {
   }
 });
 
+router.get("/mood/last/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const result = await controller.getLatestMoodEntryByUserId(userId);
+    res.status(200).json(result);
+  } catch (err) {
+    errorLogger.error("mood endpoint with userId failed to get", err);
+    res.status(500).json(err);
+  }
+});
+
 router.post("/mood", async (req, res) => {
   const body = req.body;
-  if (body.mood, body.date, body.note, body.userId) {
+  if (body.mood, body.date, body.note, body.userId, body.entryId) {
     try {
-      const result = await controller.addMoodEntry(body.userId, body.mood, body.date, body.note);
+      const result = await controller.addMoodEntry(body.entryId, body.userId, body.mood, body.date, body.note);
       res.json(result);
     } catch (err) {
       errorLogger.error("mood endpoint failed to post new moodentry", err);
