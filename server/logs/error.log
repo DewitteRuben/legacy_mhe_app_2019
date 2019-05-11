@@ -3,3 +3,207 @@
 [2019-05-06T07:37:43.663] [ERROR] error - mood endpoint failed to post new moodentry null
 [2019-05-06T07:38:19.728] [ERROR] error - mood endpoint failed to post new moodentry null
 [2019-05-07T00:10:33.296] [ERROR] error - mood endpoint failed to post new moodentry null
+[2019-05-11T15:53:03.681] [ERROR] error - mood endpoint failed to get { MongoNetworkError: connection 4 to cluster0-shard-00-00-doc9a.mongodb.net:27017 timed out
+    at TLSSocket.<anonymous> (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongodb-core/lib/connection/connection.js:259:7)
+    at Object.onceWrapper (events.js:313:30)
+    at emitNone (events.js:106:13)
+    at TLSSocket.emit (events.js:208:7)
+    at TLSSocket.Socket._onTimeout (net.js:422:8)
+    at ontimeout (timers.js:498:11)
+    at tryOnTimeout (timers.js:323:5)
+    at Timer.listOnTimeout (timers.js:290:5)
+  name: 'MongoNetworkError',
+  errorLabels: [ 'TransientTransactionError' ],
+  [Symbol(mongoErrorContextSymbol)]: {} }
+[2019-05-11T16:06:09.770] [ERROR] error - mood endpoint with userId failed to get { MongoNetworkError: connection 143 to cluster0-shard-00-00-doc9a.mongodb.net:27017 timed out
+    at TLSSocket.<anonymous> (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongodb-core/lib/connection/connection.js:259:7)
+    at Object.onceWrapper (events.js:313:30)
+    at emitNone (events.js:106:13)
+    at TLSSocket.emit (events.js:208:7)
+    at TLSSocket.Socket._onTimeout (net.js:422:8)
+    at ontimeout (timers.js:498:11)
+    at tryOnTimeout (timers.js:323:5)
+    at Timer.listOnTimeout (timers.js:290:5)
+  name: 'MongoNetworkError',
+  errorLabels: [ 'TransientTransactionError' ],
+  [Symbol(mongoErrorContextSymbol)]: {} }
+[2019-05-11T16:11:57.386] [ERROR] error - mood endpoint failed to post new moodentry { ValidationError: MoodEntry validation failed: date: Cast to Date failed for value "Dfd" at path "date"
+    at ValidationError.inspect (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/error/validation.js:59:24)
+    at formatValue (util.js:399:38)
+    at inspect (util.js:293:10)
+    at Object.format (util.js:222:18)
+    at basicLayout (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/layouts.js:69:12)
+    at app (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/appenders/file.js:55:18)
+    at categoryAppenders.forEach (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/log4js.js:42:5)
+    at Array.forEach (<anonymous>)
+    at sendLogEventToAppender (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/log4js.js:41:21)
+    at listeners.forEach.l (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/clustering.js:16:26)
+    at Array.forEach (<anonymous>)
+    at sendToListeners (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/clustering.js:16:13)
+    at Object.send (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/clustering.js:78:7)
+    at Logger._log (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/logger.js:56:16)
+    at Logger.log (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/logger.js:45:12)
+    at Logger.(anonymous function) [as error] (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/logger.js:84:10)
+  errors: 
+   { date: 
+      { CastError: Cast to Date failed for value "Dfd" at path "date"
+    at new CastError (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/error/cast.js:29:11)
+    at model.$set (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:1001:7)
+    at model._handleIndex (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:778:14)
+    at model.$set (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:724:22)
+    at model.Document (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:114:12)
+    at model.Model (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/model.js:90:12)
+    at new model (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/model.js:4367:13)
+    at Promise (/Users/Ruben/Desktop/Stage/mental_health_app/server/controllers/DiMS48Controller.js:26:26)
+    at new Promise (<anonymous>)
+    at Object.addMoodEntry (/Users/Ruben/Desktop/Stage/mental_health_app/server/controllers/DiMS48Controller.js:18:10)
+    at router.post (/Users/Ruben/Desktop/Stage/mental_health_app/server/routes/api.js:52:39)
+    at Layer.handle [as handle_request] (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/route.js:137:13)
+    at Route.dispatch (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/index.js:281:22
+        message: 'Cast to Date failed for value "Dfd" at path "date"',
+        name: 'CastError',
+        stringValue: '"Dfd"',
+        kind: 'Date',
+        value: 'Dfd',
+        path: 'date',
+        reason: [Object] } },
+  _message: 'MoodEntry validation failed',
+  name: 'ValidationError' }
+[2019-05-11T16:14:58.106] [ERROR] error - mood endpoint failed to post new moodentry { ValidationError: MoodEntry validation failed: date: Cast to Date failed for value "Dfd" at path "date"
+    at ValidationError.inspect (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/error/validation.js:59:24)
+    at formatValue (util.js:399:38)
+    at inspect (util.js:293:10)
+    at Object.format (util.js:222:18)
+    at basicLayout (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/layouts.js:69:12)
+    at app (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/appenders/file.js:55:18)
+    at categoryAppenders.forEach (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/log4js.js:42:5)
+    at Array.forEach (<anonymous>)
+    at sendLogEventToAppender (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/log4js.js:41:21)
+    at listeners.forEach.l (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/clustering.js:16:26)
+    at Array.forEach (<anonymous>)
+    at sendToListeners (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/clustering.js:16:13)
+    at Object.send (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/clustering.js:78:7)
+    at Logger._log (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/logger.js:56:16)
+    at Logger.log (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/logger.js:45:12)
+    at Logger.(anonymous function) [as error] (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/logger.js:84:10)
+  errors: 
+   { date: 
+      { CastError: Cast to Date failed for value "Dfd" at path "date"
+    at new CastError (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/error/cast.js:29:11)
+    at model.$set (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:1001:7)
+    at model._handleIndex (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:778:14)
+    at model.$set (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:724:22)
+    at model.Document (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:114:12)
+    at model.Model (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/model.js:90:12)
+    at new model (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/model.js:4367:13)
+    at Promise (/Users/Ruben/Desktop/Stage/mental_health_app/server/controllers/DiMS48Controller.js:26:26)
+    at new Promise (<anonymous>)
+    at Object.addMoodEntry (/Users/Ruben/Desktop/Stage/mental_health_app/server/controllers/DiMS48Controller.js:18:10)
+    at router.post (/Users/Ruben/Desktop/Stage/mental_health_app/server/routes/api.js:52:39)
+    at Layer.handle [as handle_request] (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/route.js:137:13)
+    at Route.dispatch (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/index.js:281:22
+        message: 'Cast to Date failed for value "Dfd" at path "date"',
+        name: 'CastError',
+        stringValue: '"Dfd"',
+        kind: 'Date',
+        value: 'Dfd',
+        path: 'date',
+        reason: [Object] } },
+  _message: 'MoodEntry validation failed',
+  name: 'ValidationError' }
+[2019-05-11T16:16:21.381] [ERROR] error - mood endpoint failed to post new moodentry { ValidationError: MoodEntry validation failed: date: Cast to Date failed for value "Dfd" at path "date"
+    at ValidationError.inspect (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/error/validation.js:59:24)
+    at formatValue (util.js:399:38)
+    at inspect (util.js:293:10)
+    at Object.format (util.js:222:18)
+    at basicLayout (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/layouts.js:69:12)
+    at app (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/appenders/file.js:55:18)
+    at categoryAppenders.forEach (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/log4js.js:42:5)
+    at Array.forEach (<anonymous>)
+    at sendLogEventToAppender (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/log4js.js:41:21)
+    at listeners.forEach.l (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/clustering.js:16:26)
+    at Array.forEach (<anonymous>)
+    at sendToListeners (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/clustering.js:16:13)
+    at Object.send (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/clustering.js:78:7)
+    at Logger._log (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/logger.js:56:16)
+    at Logger.log (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/logger.js:45:12)
+    at Logger.(anonymous function) [as error] (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/logger.js:84:10)
+  errors: 
+   { date: 
+      { CastError: Cast to Date failed for value "Dfd" at path "date"
+    at new CastError (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/error/cast.js:29:11)
+    at model.$set (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:1001:7)
+    at model._handleIndex (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:778:14)
+    at model.$set (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:724:22)
+    at model.Document (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:114:12)
+    at model.Model (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/model.js:90:12)
+    at new model (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/model.js:4367:13)
+    at Promise (/Users/Ruben/Desktop/Stage/mental_health_app/server/controllers/DiMS48Controller.js:26:26)
+    at new Promise (<anonymous>)
+    at Object.addMoodEntry (/Users/Ruben/Desktop/Stage/mental_health_app/server/controllers/DiMS48Controller.js:18:10)
+    at router.post (/Users/Ruben/Desktop/Stage/mental_health_app/server/routes/api.js:52:39)
+    at Layer.handle [as handle_request] (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/route.js:137:13)
+    at Route.dispatch (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/index.js:281:22
+        message: 'Cast to Date failed for value "Dfd" at path "date"',
+        name: 'CastError',
+        stringValue: '"Dfd"',
+        kind: 'Date',
+        value: 'Dfd',
+        path: 'date',
+        reason: [Object] } },
+  _message: 'MoodEntry validation failed',
+  name: 'ValidationError' }
+[2019-05-11T16:22:37.360] [ERROR] error - mood endpoint failed to post new moodentry { ValidationError: MoodEntry validation failed: date: Cast to Date failed for value "Dfd" at path "date"
+    at ValidationError.inspect (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/error/validation.js:59:24)
+    at formatValue (util.js:399:38)
+    at inspect (util.js:293:10)
+    at Object.format (util.js:222:18)
+    at basicLayout (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/layouts.js:69:12)
+    at app (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/appenders/file.js:55:18)
+    at categoryAppenders.forEach (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/log4js.js:42:5)
+    at Array.forEach (<anonymous>)
+    at sendLogEventToAppender (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/log4js.js:41:21)
+    at listeners.forEach.l (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/clustering.js:16:26)
+    at Array.forEach (<anonymous>)
+    at sendToListeners (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/clustering.js:16:13)
+    at Object.send (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/clustering.js:78:7)
+    at Logger._log (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/logger.js:56:16)
+    at Logger.log (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/logger.js:45:12)
+    at Logger.(anonymous function) [as error] (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/log4js/lib/logger.js:84:10)
+  errors: 
+   { date: 
+      { CastError: Cast to Date failed for value "Dfd" at path "date"
+    at new CastError (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/error/cast.js:29:11)
+    at model.$set (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:1001:7)
+    at model._handleIndex (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:778:14)
+    at model.$set (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:724:22)
+    at model.Document (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/document.js:114:12)
+    at model.Model (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/model.js:90:12)
+    at new model (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/mongoose/lib/model.js:4367:13)
+    at Promise (/Users/Ruben/Desktop/Stage/mental_health_app/server/controllers/DiMS48Controller.js:26:26)
+    at new Promise (<anonymous>)
+    at Object.addMoodEntry (/Users/Ruben/Desktop/Stage/mental_health_app/server/controllers/DiMS48Controller.js:18:10)
+    at router.post (/Users/Ruben/Desktop/Stage/mental_health_app/server/routes/api.js:52:39)
+    at Layer.handle [as handle_request] (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/route.js:137:13)
+    at Route.dispatch (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/Ruben/Desktop/Stage/mental_health_app/server/node_modules/express/lib/router/index.js:281:22
+        message: 'Cast to Date failed for value "Dfd" at path "date"',
+        name: 'CastError',
+        stringValue: '"Dfd"',
+        kind: 'Date',
+        value: 'Dfd',
+        path: 'date',
+        reason: [Object] } },
+  _message: 'MoodEntry validation failed',
+  name: 'ValidationError' }

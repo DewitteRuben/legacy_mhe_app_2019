@@ -6,7 +6,7 @@
 	<integer>10</integer>
 	<key>logs</key>
 	<dict>
-		<key>C85DC827-6B5E-49D0-A7C7-75EC59A1234E</key>
+		<key>2E548153-6ECD-455F-A5CD-A5047A7C30F6</key>
 		<dict>
 			<key>className</key>
 			<string>IDECommandLineBuildLog</string>
@@ -15,7 +15,7 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
 			<key>fileName</key>
-			<string>C85DC827-6B5E-49D0-A7C7-75EC59A1234E.xcactivitylog</string>
+			<string>2E548153-6ECD-455F-A5CD-A5047A7C30F6.xcactivitylog</string>
 			<key>primaryObservable</key>
 			<dict>
 				<key>highLevelStatus</key>
@@ -30,13 +30,13 @@
 			<key>signature</key>
 			<string>Building project mentalhealth with scheme mentalhealth and configuration Debug</string>
 			<key>timeStartedRecording</key>
-			<real>579010727.49315202</real>
+			<real>579273273.03353202</real>
 			<key>timeStoppedRecording</key>
-			<real>579010731.31112099</real>
+			<real>579273276.67440498</real>
 			<key>title</key>
 			<string>Building project mentalhealth with scheme mentalhealth and configuration Debug</string>
 			<key>uniqueIdentifier</key>
-			<string>C85DC827-6B5E-49D0-A7C7-75EC59A1234E</string>
+			<string>2E548153-6ECD-455F-A5CD-A5047A7C30F6</string>
 		</dict>
 	</dict>
 </dict>

@@ -7,6 +7,7 @@ import { compose, Dispatch } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Header, MoodItem } from "../../components";
 import {
+  fetchLocalMoodEntries,
   fetchMoodEntries,
   getMoodEntries,
   getStatus,
@@ -86,7 +87,7 @@ const mapStateToProps = (state: StoreState) => ({
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>) => ({
-  fetchAllMoodEntries: () => dispatch(fetchMoodEntries())
+  fetchAllMoodEntries: () => dispatch(fetchLocalMoodEntries())
 });
 
 export default compose<React.ComponentType<any>>(

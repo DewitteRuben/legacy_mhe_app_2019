@@ -5,6 +5,8 @@ import { RouteComponentProps, withRouter } from "react-router";
 import { RouteConfig } from "react-router-config";
 import { compose, Dispatch } from "redux";
 import AppNavigator from "./navigators";
+import { clearLocalMoodEntries } from "./services/localStorage";
+import SyncManager from "./services/syncManager";
 import { StoreState } from "./store/store.types";
 
 interface AppProps extends RouteComponentProps {
@@ -22,6 +24,12 @@ const listener = (data: NetInfoData) => {
 };
 
 NetInfo.getConnectionInfo().then(listener);
+
+const syncManager = new SyncManager();
+global.syncManager = syncManager;
+syncManager.start();
+syncManager.sync();
+
 const subscription = NetInfo.addEventListener("connectionChange", listener);
 
 class App extends React.PureComponent<AppProps> {

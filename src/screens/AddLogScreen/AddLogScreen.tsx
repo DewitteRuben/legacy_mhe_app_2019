@@ -21,7 +21,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { Header, SpinnerOverlay } from "../../components";
 import config from "../../config";
 // import { addMoodEntry } from "../../services/api";
-import { fetchAddMoodEntry, getStatus } from "../../store/log";
+import { addLocalMoodEntry, fetchAddMoodEntry, getStatus } from "../../store/log";
 import { StoreState } from "../../store/store.types";
 
 interface AddLogScreenProps extends RouteComponentProps {
@@ -409,7 +409,7 @@ const mapStateToProps = (state: StoreState) => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>) => ({
   addMoodEntry: (userId: string, mood: string[], date: Date, note: string) =>
-    dispatch(fetchAddMoodEntry(userId, mood, date, note))
+    dispatch(addLocalMoodEntry(userId, mood, date, note))
 });
 
 export default compose<React.ComponentType<any>>(

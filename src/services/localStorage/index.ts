@@ -4,7 +4,8 @@ import { MoodEntry } from "../../store/log";
 import { safelyParseJSON, safelyStringifyJSON } from "../../utils/json";
 
 const STORAGE_KEYS = {
-  ALL_MOOD_ENTRIES: "ALL_MOOD_ENTRIES"
+  ALL_MOOD_ENTRIES: "ALL_MOOD_ENTRIES",
+  LAST_KNOWN_ENTRY: "LAST_KNOWN_ENTRY"
 };
 
 export const getLocalMoodEntries = async () => {
@@ -21,6 +22,14 @@ export const setLocalMoodEntry = async (moodEntries: MoodEntry[]) => {
 
 export const clearLocalMoodEntries = () => {
   AsyncStorage.removeItem(STORAGE_KEYS.ALL_MOOD_ENTRIES);
+};
+
+export const setLastKnownId = (id: string) => {
+  AsyncStorage.setItem(STORAGE_KEYS.LAST_KNOWN_ENTRY, id);
+};
+
+export const getLastKnownMoodEntry = () => {
+  return AsyncStorage.getItem(STORAGE_KEYS.LAST_KNOWN_ENTRY);
 };
 
 const setJSON = async (object: object, key: string) => {

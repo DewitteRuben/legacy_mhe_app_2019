@@ -1,7 +1,8 @@
 import { ActionCreator } from "redux";
 import { ThunkAction } from "redux-thunk";
+import uuid4 from "uuid/v4";
 import {
-  addMoodEntry as postMoodEntry,
+  addMoodEntry as apiAddMoodEntry,
   getMoodEntriesByUserId
 } from "../../services/api";
 import {
@@ -70,42 +71,76 @@ const setMoodEntries: ActionCreator<SetMoodEntriesAction> = (
 
 const fetchMoodEntries = (): ThunkResult<void> => async dispatch => {
   dispatch(fetchMoodEntriesPending());
-  clearLocalMoodEntries();
   let moodEntries = [];
   try {
-    if (global.isConnected) {
-      moodEntries = await getMoodEntriesByUserId("userid");
-    } else {
-      moodEntries = await getLocalMoodEntries();
-    }
+    moodEntries = await getMoodEntriesByUserId("userid");
     dispatch(setMoodEntries(moodEntries));
+    dispatch(addAllEntriesToLocal(moodEntries));
+    dispatch(fetchMoodEntriesSuccess());
+  } catch (error) {
+    dispatch(fetchMoodEntriesError(error));
+  }
+};
+
+const fetchLocalMoodEntries = (): ThunkResult<void> => async dispatch => {
+  dispatch(fetchMoodEntriesPending());
+  let localMoodEntries = [];
+  try {
+    localMoodEntries = await getLocalMoodEntries();
+    dispatch(setMoodEntries(localMoodEntries));
+    dispatch(fetchMoodEntriesSuccess());
+  } catch (error) {
+    dispatch(fetchMoodEntriesError(error));
+  }
+};
+
+const addAllEntriesToLocal = (
+  moodEntries: MoodEntry[]
+): ThunkResult<void> => async dispatch => {
+  dispatch(fetchMoodEntriesPending());
+  try {
+    setLocalMoodEntry(moodEntries);
+    dispatch(fetchMoodEntriesSuccess());
   } catch (error) {
     dispatch(fetchMoodEntriesError(error));
   }
 };
 
 const fetchAddMoodEntry = (
+  entryId: string,
   userId: string,
   mood: string[],
   date: Date,
   note: string
 ): ThunkResult<void> => async (dispatch, getState) => {
-  dispatch(fetchMoodEntriesPending());
+  try {
+    apiAddMoodEntry(entryId, userId, mood, date, note);
+    return Promise.resolve();
+  } catch (error) {
+    dispatch(fetchMoodEntriesError(error));
+    return Promise.reject(error);
+  }
+};
+
+const addLocalMoodEntry = (
+  userId: string,
+  mood: string[],
+  date: Date,
+  note: string
+): ThunkResult<void> => async (dispatch, getState) => {
   const moodEntry = {
     userId,
     mood,
     date,
-    note
+    note,
+    entryId: uuid4()
   } as MoodEntry;
-  dispatch(addMoodEntry(moodEntry));
-
+  dispatch(fetchMoodEntriesPending());
   const { moodEntries } = getState().log;
-  console.log(moodEntries);
   try {
+    dispatch(addMoodEntry(moodEntry));
     await setLocalMoodEntry([...moodEntries, moodEntry]);
-    if (global.isConnected) {
-      await postMoodEntry(userId, mood, date, note);
-    }
+    global.syncManager.sync();
     dispatch(fetchMoodEntriesSuccess());
     return Promise.resolve();
   } catch (error) {
@@ -138,4 +173,11 @@ const fetchMoodEntriesPending: ActionCreator<
   type: LogActionTypes.MOOD_ENTRIES_LOADING
 });
 
-export { setMoodEntries, addMoodEntry, fetchMoodEntries, fetchAddMoodEntry };
+export {
+  setMoodEntries,
+  addMoodEntry,
+  fetchMoodEntries,
+  addLocalMoodEntry,
+  fetchAddMoodEntry,
+  fetchLocalMoodEntries
+};
