@@ -1,8 +1,7 @@
 import { Button, Footer, FooterTab, Icon, Text } from "native-base";
 import React from "react";
 import { createBottomTabNavigator } from "react-navigation-tabs";
-import { CalendarScreen } from "../CalendarScreen";
-import { LogScreen } from "../LogScreen";
+import { CalendarScreen, LogScreen, TasksScreen } from "../../screens";
 
 const tabNavigator = createBottomTabNavigator(
   {
@@ -12,8 +11,8 @@ const tabNavigator = createBottomTabNavigator(
     Sleep: {
       screen: LogScreen
     },
-    Stats: {
-      screen: LogScreen
+    Tasks: {
+      screen: TasksScreen
     },
     Calendar: {
       screen: CalendarScreen
@@ -52,10 +51,10 @@ const tabNavigator = createBottomTabNavigator(
             <Button
               vertical={true}
               active={props.navigation.state.index === 2}
-              onPress={() => props.navigation.navigate("Stats")}
+              onPress={() => props.navigation.navigate("Tasks")}
             >
-              <Icon type="Entypo" name="bar-graph" />
-              <Text>Stats</Text>
+              <Icon type="FontAwesome5" name="tasks" />
+              <Text>Tasks</Text>
             </Button>
           </FooterTab>
           <FooterTab>
