@@ -4001,3 +4001,8 @@
 [2019-05-11T17:17:03.726] [INFO] default - ::ffff:127.0.0.1 requested /api/mood/last/userid using GET
 [2019-05-11T17:17:13.747] [INFO] default - ::ffff:127.0.0.1 requested /api/mood/last/userid using GET
 [2019-05-11T17:17:23.762] [INFO] default - ::ffff:127.0.0.1 requested /api/mood/last/userid using GET
+[2019-05-12T14:08:34.960] [INFO] info - Server started on port 3000
+[2019-05-12T14:13:46.405] [INFO] info - Server started on port 3000
+[2019-05-12T14:20:59.757] [INFO] default - ::1 requested /api/mood/ using GET
+[2019-05-12T14:21:11.540] [INFO] default - ::1 requested /api/mood/ using GET
+[2019-05-12T14:21:14.095] [INFO] default - ::1 requested /api/mood/ using GET
