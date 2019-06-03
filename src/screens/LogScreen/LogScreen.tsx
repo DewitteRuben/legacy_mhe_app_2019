@@ -41,10 +41,11 @@ class LogScreen extends React.PureComponent<LogScreenProps, LogScreenState> {
   public render() {
     const { navigation, moodEntries, loading } = this.props;
 
+    console.log(moodEntries);
     return (
       <Container>
         <Header left={<Icon name="menu" />} right={<Icon name="settings" />} />
-        <Content padder={true}>
+        <Content scrollEnabled padder={true}>
           {moodEntries.length > 0 && !loading && (
             <View>
               <FlatList
@@ -52,10 +53,14 @@ class LogScreen extends React.PureComponent<LogScreenProps, LogScreenState> {
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }: { item: any }) => (
                   <MoodItem
+                    onPress={() =>
+                      navigation.navigate("MoodDetail", { moodItem: item })
+                    }
                     id={item._id}
                     logDate={item.date}
-                    note={item.note}
-                    moods={item.mood}
+                    thoughts={item.thoughts}
+                    emotions={item.emotions}
+                    mood={item.mood}
                   />
                 )}
               />

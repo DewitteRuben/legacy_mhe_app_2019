@@ -14,8 +14,10 @@
   },
   "dependencies": {
     "@react-native-community/netinfo": "^2.0.9",
+    "@types/react-native-vector-icons": "^6.4.1",
     "lodash.difference": "^4.5.0",
     "lodash.get": "^4.4.2",
+    "moment": "^2.24.0",
     "native-base": "^2.12.1",
     "react": "16.6.1",
     "react-native": "^0.59.4",

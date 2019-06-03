@@ -8,7 +8,6 @@ import {
   View
 } from "native-base";
 import React, { Fragment } from "react";
-import { TouchableHighlight, TouchableOpacity } from "react-native";
 
 interface TaskItemProps {
   onCheckToggle?: (state: boolean) => void;
@@ -40,69 +39,66 @@ export default class TaskItem extends React.PureComponent<
     const { isDetailVisible, isTaskDone } = this.state;
     return (
       <Fragment>
-        <TouchableOpacity
-          onPress={() => this.setState({ isDetailVisible: !isDetailVisible })}
-        >
-          <Card>
-            <CardItem
-              style={{
-                flex: 1,
-                flexDirection: "row",
-                justifyContent: "space-between"
-              }}
-            >
-              <View style={{ flex: 1, flexDirection: "row" }}>
-                <View style={{ marginRight: 25 }}>
-                  <CheckBox
-                    color="green"
-                    checked={isTaskDone}
-                    onPress={() => {
-                      this.setState({ isTaskDone: !isTaskDone }, () => {
-                        if (onCheckToggle) {
-                          onCheckToggle(this.state.isTaskDone);
-                        }
-                      });
-                    }}
-                  />
-                </View>
-                <View>
-                  <Text
-                    style={[
-                      isTaskDone && {
-                        textDecorationLine: "line-through",
-                        color: "grey"
+        <Card>
+          <CardItem
+            bordered={true}
+            button={true}
+            onPress={() => this.setState({ isDetailVisible: !isDetailVisible })}
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-between"
+            }}
+          >
+            <View style={{ flex: 1, flexDirection: "row" }}>
+              <View style={{ marginRight: 25 }}>
+                <CheckBox
+                  color="green"
+                  checked={isTaskDone}
+                  onPress={() => {
+                    this.setState({ isTaskDone: !isTaskDone }, () => {
+                      if (onCheckToggle) {
+                        onCheckToggle(this.state.isTaskDone);
                       }
-                    ]}
-                  >
-                    {title}
-                  </Text>
-                </View>
+                    });
+                  }}
+                />
               </View>
               <View>
-                <Button
-                  onPress={() => {
-                    this.setState({ isDetailVisible: !isDetailVisible });
-                  }}
-                  transparent={true}
-                  icon={true}
+                <Text
+                  style={[
+                    isTaskDone && {
+                      textDecorationLine: "line-through",
+                      color: "grey"
+                    }
+                  ]}
                 >
-                  <Icon
-                    style={{ color: "grey" }}
-                    name={isDetailVisible ? "caret-up" : "caret-down"}
-                    type="FontAwesome"
-                  />
-                </Button>
+                  {title}
+                </Text>
               </View>
+            </View>
+            <View>
+              <Button
+                onPress={() => {
+                  this.setState({ isDetailVisible: !isDetailVisible });
+                }}
+                transparent={true}
+                icon={true}
+              >
+                <Icon
+                  style={{ color: "grey" }}
+                  name={isDetailVisible ? "caret-up" : "caret-down"}
+                  type="FontAwesome"
+                />
+              </Button>
+            </View>
+          </CardItem>
+          {isDetailVisible && (
+            <CardItem bordered={true} style={{ backgroundColor: "#f5f4f5" }}>
+              <Text>{details}</Text>
             </CardItem>
-          </Card>
-        </TouchableOpacity>
-        {isDetailVisible && (
-          <View style={{ marginVertical: 0 }}>
-            <CardItem bordered={true}>
-              <Text note={true}>{details}</Text>
-            </CardItem>
-          </View>
-        )}
+          )}
+        </Card>
       </Fragment>
     );
   }

@@ -6,9 +6,11 @@ const mentalHealthDatabase = require("../../util/databaseGetter").mentalHealthDa
 const MoodEntrySchema = new Schema({
     entryId: String,
     userId: String,
-    mood: Array,
     date: Date,
-    note: String,
+    mood: String,
+    emotions: Array,
+    thoughts: String,
+    experiences: Array,
 })
 
 module.exports = {

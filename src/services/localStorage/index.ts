@@ -5,7 +5,9 @@ import { safelyParseJSON, safelyStringifyJSON } from "../../utils/json";
 
 const STORAGE_KEYS = {
   ALL_MOOD_ENTRIES: "ALL_MOOD_ENTRIES",
-  LAST_KNOWN_ENTRY: "LAST_KNOWN_ENTRY"
+  LAST_KNOWN_ENTRY: "LAST_KNOWN_ENTRY",
+  CLIENT_JWT_TOKEN: "CLIENT_JWT_TOKEN",
+  CLIENT_USERID: "CLIENT_USERID"
 };
 
 export const getLocalMoodEntries = async () => {
@@ -26,6 +28,22 @@ export const clearLocalMoodEntries = () => {
 
 export const setLastKnownId = (id: string) => {
   AsyncStorage.setItem(STORAGE_KEYS.LAST_KNOWN_ENTRY, id);
+};
+
+export const setJWTToken = (token: string) => {
+  AsyncStorage.setItem(STORAGE_KEYS.CLIENT_JWT_TOKEN, token);
+};
+
+export const setUserId = (userId: string) => {
+  AsyncStorage.setItem(STORAGE_KEYS.CLIENT_USERID, userId);
+};
+
+export const getUserId = () => {
+  return AsyncStorage.getItem(STORAGE_KEYS.CLIENT_USERID);
+};
+
+export const getJWTToken = () => {
+  return AsyncStorage.getItem(STORAGE_KEYS.CLIENT_JWT_TOKEN);
 };
 
 export const getLastKnownMoodEntry = () => {

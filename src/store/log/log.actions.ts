@@ -106,15 +106,12 @@ const addAllEntriesToLocal = (
   }
 };
 
-const fetchAddMoodEntry = (
-  entryId: string,
-  userId: string,
-  mood: string[],
-  date: Date,
-  note: string
-): ThunkResult<void> => async (dispatch, getState) => {
+const fetchAddMoodEntry = (moodEntry: MoodEntry): ThunkResult<void> => async (
+  dispatch,
+  getState
+) => {
   try {
-    apiAddMoodEntry(entryId, userId, mood, date, note);
+    await apiAddMoodEntry(moodEntry);
     return Promise.resolve();
   } catch (error) {
     dispatch(fetchMoodEntriesError(error));
@@ -122,22 +119,14 @@ const fetchAddMoodEntry = (
   }
 };
 
-const addLocalMoodEntry = (
-  userId: string,
-  mood: string[],
-  date: Date,
-  note: string
-): ThunkResult<void> => async (dispatch, getState) => {
-  const moodEntry = {
-    userId,
-    mood,
-    date,
-    note,
-    entryId: uuid4()
-  } as MoodEntry;
+const addLocalMoodEntry = (moodEntry: MoodEntry): ThunkResult<void> => async (
+  dispatch,
+  getState
+) => {
   dispatch(fetchMoodEntriesPending());
   const { moodEntries } = getState().log;
   try {
+    moodEntry.entryId = uuid4();
     dispatch(addMoodEntry(moodEntry));
     await setLocalMoodEntry([...moodEntries, moodEntry]);
     global.syncManager.sync();

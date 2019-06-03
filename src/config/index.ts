@@ -1,5 +1,13 @@
 export default {
   defaultLanguage: "nl",
+  experiences: [
+    { positive: true, value: "Good time with someone" },
+    { positive: true, value: "Achievement" },
+    { positive: true, value: "Relaxation" },
+    { positive: false, value: "Conflict with someone" },
+    { positive: false, value: "Overwhelming task" },
+    { positive: false, value: "Emptiness or boredom" }
+  ],
   emotions: {
     pleasant_activated: [
       "Astonished",

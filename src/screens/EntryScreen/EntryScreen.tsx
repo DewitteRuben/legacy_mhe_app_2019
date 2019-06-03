@@ -1,13 +1,13 @@
 import { Button, Container, Icon, Text } from "native-base";
 import React, { Fragment } from "react";
 import { Alert, Platform, StyleSheet, View } from "react-native";
-import { Card } from "react-native-elements";
-import QRCodeScanner from "react-native-qrcode-scanner";
+import { Card, Overlay } from "react-native-elements";
 import { connect } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
 import { compose, Dispatch } from "redux";
 import { Header } from "../../components";
 import { StoreState } from "../../store/store.types";
+import { getJWTToken } from "../../services/localStorage";
 
 interface EntryScreenProps extends RouteComponentProps {
   navigation: any;
@@ -37,17 +37,15 @@ class EntryScreen extends React.PureComponent<
     };
   }
 
+  async componentDidMount() {
+    const jwtToken = await getJWTToken();
+    if (jwtToken) {
+      this.props.navigation.navigate("Main");
+    }
+  }
+
   public toggleModal = (state: boolean) => {
     this.setState({ isModalVisible: state });
-  };
-
-  public registerUser = (data: any) => {
-    if (data.type === "QR_CODE") {
-      this.setState({ qrData: data, isLoading: true });
-    } else {
-      Alert.alert("Register user", "Invalid QR Code!");
-    }
-    this.toggleModal(false);
   };
 
   public render() {
@@ -71,7 +69,7 @@ class EntryScreen extends React.PureComponent<
         >
           <Button
             iconLeft={true}
-            onPress={() => this.props.navigation.navigate("App")}
+            onPress={() => this.props.navigation.navigate("ScanQR")}
           >
             <Icon name="qrcode" type="AntDesign" color="white" />
             <Text>Scan QR Code</Text>
@@ -87,20 +85,13 @@ class EntryScreen extends React.PureComponent<
   }
 }
 
-/*<QRCodeScanner
-              onRead={this.registerUser}
-              cameraStyle={qrStyle.camera}
-              containerStyle={qrStyle.container}
-            /> */
-
-const qrStyle = StyleSheet.create<any>({
-  camera: { width: 150, height: 150 },
-  container: { flex: 1, justifyContent: "center", alignItems: "center" }
+const mapStateToProps = (state: StoreState) => ({
+  state
 });
 
-const mapStateToProps = (state: StoreState) => ({});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({});
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  dispatch
+});
 
 export default compose<React.ComponentType<any>>(
   connect(

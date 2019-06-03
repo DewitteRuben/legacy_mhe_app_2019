@@ -7,14 +7,18 @@ import {
 import { AddLogScreen } from "../screens/AddLogScreen";
 import { EntryScreen } from "../screens/EntryScreen";
 import { MainScreen } from "../screens/MainScreen";
+import { ScanQRScreen } from "../screens/ScanQRScreen";
+import { MoodDetailScreen } from "../screens/MoodDetailScreen";
 
 const AuthStack = createStackNavigator({
-  Entry: { screen: EntryScreen }
+  Entry: { screen: EntryScreen },
+  ScanQR: { screen: ScanQRScreen }
 });
 
 const AppStack = createStackNavigator({
   Main: { screen: MainScreen },
-  AddLog: { screen: AddLogScreen }
+  AddLog: { screen: AddLogScreen },
+  MoodDetail: { screen: MoodDetailScreen }
 });
 
 export default createAppContainer(

@@ -3,6 +3,7 @@ import { CalendarScreen } from "./CalendarScreen";
 import { EntryScreen } from "./EntryScreen";
 import { LogScreen } from "./LogScreen";
 import { MainScreen } from "./MainScreen";
+import { ScanQRScreen } from "./ScanQRScreen";
 import { TasksScreen } from "./TasksScreen";
 export {
   MainScreen,
@@ -10,5 +11,6 @@ export {
   TasksScreen,
   LogScreen,
   AddLogScreen,
-  CalendarScreen
+  CalendarScreen,
+  ScanQRScreen
 };

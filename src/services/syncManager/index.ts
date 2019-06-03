@@ -8,7 +8,8 @@ import { getLastKnownId as getLastKnownOnlineId } from "../api";
 import {
   getLastKnownMoodEntry as getLastKnownLocalId,
   getLocalMoodEntries,
-  setLastKnownId as setLastKnownLocalId
+  setLastKnownId as setLastKnownLocalId,
+  getUserId
 } from "../localStorage";
 const SYNC_INTERVAL = 60000;
 
@@ -17,7 +18,8 @@ export default class ServiceManager {
 
   public sync = async () => {
     try {
-      const onlineId = await getLastKnownOnlineId("userid");
+      const userId = (await getUserId()) || "";
+      const onlineId = await getLastKnownOnlineId(userId);
 
       // receive local data
       const localMoodEntries = await getLocalMoodEntries();
@@ -26,13 +28,7 @@ export default class ServiceManager {
       if (!onlineId) {
         // add all local entries to the online database
         localMoodEntries.forEach((e: MoodEntry) => {
-          store.dispatch(fetchAddMoodEntry(
-            e.entryId,
-            e.userId,
-            e.mood,
-            e.date,
-            e.note
-          ) as any);
+          store.dispatch(fetchAddMoodEntry(e) as any);
         });
         return;
       }
@@ -51,18 +47,13 @@ export default class ServiceManager {
 
         // push all new local changes
         newLocalNotOnlineEntries.forEach((e: MoodEntry) => {
-          store.dispatch(fetchAddMoodEntry(
-            e.entryId,
-            e.userId,
-            e.mood,
-            e.date,
-            e.note
-          ) as any);
+          store.dispatch(fetchAddMoodEntry(e) as any);
         });
       } else {
         store.dispatch(fetchMoodEntries() as any);
       }
     } catch (error) {
+      console.log(error);
       // do nothing
     }
   };

@@ -7,12 +7,13 @@ import {
   Icon,
   Input,
   Item,
-  Spinner,
   Text,
-  View
+  View,
+  CheckBox,
+  Label
 } from "native-base";
 import React from "react";
-import { Alert, Dimensions, FlatList, Platform } from "react-native";
+import { Alert, FlatList } from "react-native";
 import { Overlay } from "react-native-elements";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
@@ -21,18 +22,28 @@ import { ThunkDispatch } from "redux-thunk";
 import { Header, SpinnerOverlay } from "../../components";
 import config from "../../config";
 // import { addMoodEntry } from "../../services/api";
-import { addLocalMoodEntry, fetchAddMoodEntry, getStatus } from "../../store/log";
+import {
+  addLocalMoodEntry,
+  fetchAddMoodEntry,
+  getStatus,
+  MoodEntry
+} from "../../store/log";
 import { StoreState } from "../../store/store.types";
+import {
+  SmileyVeryBad,
+  SmileyBad,
+  SmileyGood,
+  SmileyVeryGood,
+  SmileyModerate
+} from "../../components/icons";
+import { BorderRadius } from "../../styles";
+import Smiley from "../../components/Smiley";
+import ExperienceItem from "../../components/ExperienceItem";
+import { string } from "prop-types";
 
 interface AddLogScreenProps extends RouteComponentProps {
   navigation: any;
-  addMoodEntry: (
-    userId: string,
-    mood: string[],
-    date: Date,
-    note: string
-  ) => Promise<any>;
-
+  addMoodEntry: (moodEntry: MoodEntry) => Promise<any>;
   loading: boolean;
 }
 
@@ -41,8 +52,16 @@ interface AddLogScreenState {
   selectedMood: string;
   selectedDate: Date;
   selectedMoods: string[];
+  customMoods: string[];
+  inputCustomEmotion: boolean;
   note: string;
+  customMood: string;
   processing: boolean;
+  selectedSmiley: string;
+  selectedExperiences: string[];
+  inputCustomExperience: boolean;
+  customExperience: any;
+  customExperiences: any[];
 }
 
 const initialState = () => ({
@@ -51,7 +70,15 @@ const initialState = () => ({
   selectedDate: new Date(),
   selectedMoods: [],
   note: "",
-  processing: false
+  processing: false,
+  customMoods: [],
+  customMood: "",
+  inputCustomEmotion: false,
+  selectedSmiley: "",
+  selectedExperiences: [],
+  inputCustomExperience: false,
+  customExperience: { value: "", positive: false },
+  customExperiences: []
 });
 
 class AddLogScreen extends React.PureComponent<
@@ -67,8 +94,13 @@ class AddLogScreen extends React.PureComponent<
     this.state = initialState();
   }
 
+  public getRelevantExperiences = () => {
+    const { customExperiences } = this.state;
+    return [...config.experiences, ...customExperiences];
+  };
+
   public getRelevantEmotions = () => {
-    const { selectedEnergy, selectedMood } = this.state;
+    const { selectedEnergy, selectedMood, customMoods } = this.state;
 
     const emotions: { [key: string]: string[] } = config.emotions;
     const keys = Object.keys(emotions);
@@ -84,7 +116,22 @@ class AddLogScreen extends React.PureComponent<
       return prev;
     }, "");
 
-    return emotions[emotionType];
+    return [...customMoods, ...emotions[emotionType]];
+  };
+
+  public setExperience = (experience: string) => {
+    const { selectedExperiences } = this.state;
+    let newState: string[] = selectedExperiences;
+
+    if (selectedExperiences.includes(experience)) {
+      newState = selectedExperiences.filter(
+        selectedExperience => experience !== selectedExperience
+      );
+    } else {
+      newState = [...selectedExperiences, experience];
+    }
+
+    this.setState({ selectedExperiences: newState });
   };
 
   public setMood = (mood: string) => {
@@ -104,16 +151,24 @@ class AddLogScreen extends React.PureComponent<
   };
 
   public saveMoodEntry = async () => {
-    const { selectedMoods, selectedDate, note } = this.state;
+    const {
+      selectedMoods,
+      selectedDate,
+      selectedSmiley,
+      note,
+      selectedExperiences
+    } = this.state;
     const { navigation, addMoodEntry } = this.props;
-    if (selectedMoods.length && note.length) {
+    if (selectedMoods.length && selectedSmiley.length) {
+      const moodEntry = {
+        mood: selectedSmiley,
+        thoughts: note,
+        date: selectedDate,
+        emotions: selectedMoods,
+        experiences: selectedExperiences
+      } as MoodEntry;
       try {
-        const response = await addMoodEntry(
-          "userid",
-          selectedMoods,
-          selectedDate,
-          note
-        );
+        const response = await addMoodEntry(moodEntry);
         this.setState(initialState(), navigation.goBack);
       } catch (error) {}
     } else {
@@ -126,12 +181,18 @@ class AddLogScreen extends React.PureComponent<
   };
 
   public canSaveLog = () => {
-    const { selectedMood, selectedEnergy, selectedMoods } = this.state;
+    const {
+      selectedMood,
+      selectedEnergy,
+      selectedMoods,
+      selectedSmiley
+    } = this.state;
 
     return (
       selectedMood.length > 0 &&
       selectedEnergy.length > 0 &&
-      selectedMoods.length > 0
+      selectedMoods.length > 0 &&
+      selectedSmiley.length > 0
     );
   };
 
@@ -148,11 +209,19 @@ class AddLogScreen extends React.PureComponent<
       selectedMood,
       selectedDate,
       selectedMoods,
-      note
+      note,
+      inputCustomEmotion,
+      customMoods,
+      customMood,
+      selectedSmiley,
+      inputCustomExperience,
+      customExperiences,
+      customExperience
     } = this.state;
 
     const { loading } = this.props;
 
+    console.log(customExperience);
     return (
       <Container>
         <Header
@@ -165,8 +234,22 @@ class AddLogScreen extends React.PureComponent<
           }
         />
         <Content padder={true}>
-          <Form>
-            <Text style={{ marginVertical: 10 }}>
+          <View
+            style={{
+              marginVertical: 10,
+              textAlign: "center",
+              borderWidth: 1,
+              borderColor: "grey",
+              padding: 10,
+              borderRadius: 10
+            }}
+          >
+            <Text
+              style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}
+            >
+              General
+            </Text>
+            <Text style={{ marginVertical: 10, textAlign: "center" }}>
               Date of logging: {selectedDate.toLocaleString()}
             </Text>
             <Button block={true} light={true} iconLeft={true} rounded={true}>
@@ -182,35 +265,102 @@ class AddLogScreen extends React.PureComponent<
                 disabled={false}
               />
             </Button>
-
-            <Text style={{ marginVertical: 10 }}>
-              How would you describe your energy levels?
+          </View>
+          <View
+            style={{
+              marginVertical: 10,
+              textAlign: "center",
+              borderWidth: 1,
+              borderColor: "grey",
+              padding: 10,
+              borderRadius: 10
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                textAlign: "center",
+                marginTop: 10
+              }}
+            >
+              Mood and emotion
+            </Text>
+            <Text style={{ marginVertical: 10, textAlign: "center" }}>
+              Which smiley fits your mood the most?
+            </Text>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginVertical: 10,
+                textAlign: "center"
+              }}
+            >
+              <Smiley
+                onPress={() => this.setState({ selectedSmiley: "veryBad" })}
+                selected={selectedSmiley === "veryBad"}
+                text="veryBad"
+                icon="veryBad"
+              />
+              <Smiley
+                onPress={() => this.setState({ selectedSmiley: "bad" })}
+                selected={selectedSmiley === "bad"}
+                text="bad"
+                icon="bad"
+              />
+              <Smiley
+                onPress={() => this.setState({ selectedSmiley: "moderate" })}
+                selected={selectedSmiley === "moderate"}
+                text="moderate"
+                icon="moderate"
+              />
+              <Smiley
+                onPress={() => this.setState({ selectedSmiley: "good" })}
+                selected={selectedSmiley === "good"}
+                text="good"
+                icon="good"
+              />
+              <Smiley
+                onPress={() => this.setState({ selectedSmiley: "veryGood" })}
+                selected={selectedSmiley === "veryGood"}
+                text="veryGood"
+                icon="veryGood"
+              />
+            </View>
+            <Text style={{ marginVertical: 10, textAlign: "center" }}>
+              Describe your current energy levels.
             </Text>
             <View
               style={{
                 flex: 1,
                 flexDirection: "row",
                 justifyContent: "space-around",
-                marginVertical: 10
+                marginVertical: 10,
+                textAlign: "center"
               }}
             >
               <Button
                 onPress={() =>
                   this.setEmotionParameter("selectedEnergy", "activated")
                 }
-                style={
+                style={[
                   selectedEnergy === "activated"
                     ? { backgroundColor: "#7a7978" }
                     : null
-                }
+                ]}
                 rounded={true}
                 light={true}
                 iconLeft={true}
               >
                 <Icon
-                  style={
-                    selectedEnergy === "activated" ? { color: "#f4f4f4" } : null
-                  }
+                  style={[
+                    selectedEnergy === "activated"
+                      ? { color: "#f4f4f4" }
+                      : null,
+                    { fontSize: 16 }
+                  ]}
                   name="battery-full"
                   type="FontAwesome"
                 />
@@ -236,11 +386,12 @@ class AddLogScreen extends React.PureComponent<
                 iconLeft={true}
               >
                 <Icon
-                  style={
+                  style={[
                     selectedEnergy === "deactivated"
                       ? { color: "#f4f4f4" }
-                      : null
-                  }
+                      : null,
+                    { fontSize: 16 }
+                  ]}
                   name="battery-quarter"
                   type="FontAwesome"
                 />
@@ -255,15 +406,16 @@ class AddLogScreen extends React.PureComponent<
                 </Text>
               </Button>
             </View>
-            <Text style={{ marginVertical: 10 }}>
-              How would you describe your current mood?
+            <Text style={{ marginVertical: 10, textAlign: "center" }}>
+              Describe your current emotional state.
             </Text>
             <View
               style={{
                 flex: 1,
                 flexDirection: "row",
                 justifyContent: "space-around",
-                marginVertical: 10
+                marginVertical: 10,
+                textAlign: "center"
               }}
             >
               <Button
@@ -325,28 +477,28 @@ class AddLogScreen extends React.PureComponent<
             </View>
             {selectedMood.length > 0 && selectedEnergy.length > 0 && (
               <View>
-                <Text style={{ marginVertical: 10 }}>
+                <Text style={{ marginVertical: 10, textAlign: "center" }}>
                   Select at least one option that fits best:
                 </Text>
                 <FlatList
                   data={this.getRelevantEmotions()}
                   contentContainerStyle={{
                     flex: 1,
-                    alignSelf: "center",
-                    alignItems: "center"
+                    flexDirection: "column"
                   }}
-                  numColumns={2}
+                  numColumns={3}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({ item, index }) => (
                     <Button
                       key={index}
                       onPress={() => this.setMood(item)}
+                      rounded={true}
                       bordered={true}
                       info={true}
                       style={[
                         {
-                          marginHorizontal: 10,
-                          marginVertical: 10
+                          marginHorizontal: 5,
+                          marginVertical: 5
                         },
                         selectedMoods.includes(item)
                           ? {
@@ -369,35 +521,227 @@ class AddLogScreen extends React.PureComponent<
                     </Button>
                   )}
                 />
-                <Form>
-                  <Text style={{ marginVertical: 10 }}>
-                    Optionally, add some additional information:
-                  </Text>
-                  <Item last={true}>
-                    <Input
-                      placeholder="Extra note"
-                      value={note}
-                      onChangeText={(text: string) =>
-                        this.setState({ note: text })
-                      }
-                    />
-                  </Item>
-                </Form>
                 <Button
-                  style={{ marginVertical: 10 }}
-                  block={true}
-                  iconLeft={true}
-                  disabled={!this.canSaveLog()}
-                  onPress={this.saveMoodEntry}
+                  onPress={() => this.setState({ inputCustomEmotion: true })}
+                  iconLeft
+                  style={{ marginVertical: 5 }}
+                  block
+                  light
                 >
-                  <Icon name="save" type="FontAwesome" />
-                  <Text>Save Log</Text>
+                  <Icon type="MaterialIcons" name="add" />
+                  <Text>Add emotion</Text>
                 </Button>
               </View>
             )}
-          </Form>
+          </View>
+          <View
+            style={{
+              marginVertical: 10,
+              textAlign: "center",
+              borderWidth: 1,
+              borderColor: "grey",
+              padding: 10,
+              borderRadius: 10
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                textAlign: "center",
+                marginTop: 10
+              }}
+            >
+              Experiences
+            </Text>
+            <View style={{ padding: 10 }}>
+              <FlatList
+                data={this.getRelevantExperiences()}
+                renderItem={({ item, index }) => (
+                  <ExperienceItem
+                    key={index}
+                    positive={item.positive}
+                    onPress={() => this.setExperience(item)}
+                    experience={item.value}
+                  />
+                )}
+              />
+              <Button
+                onPress={() => this.setState({ inputCustomExperience: true })}
+                iconLeft
+                style={{ marginVertical: 5 }}
+                block
+                light
+              >
+                <Icon type="MaterialIcons" name="add" />
+                <Text>Add experience</Text>
+              </Button>
+            </View>
+          </View>
+          <View
+            style={{
+              marginVertical: 10,
+              textAlign: "center",
+              borderWidth: 1,
+              borderColor: "grey",
+              padding: 10,
+              borderRadius: 10
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                textAlign: "center",
+                marginTop: 10
+              }}
+            >
+              Thoughts
+            </Text>
+            <View style={{ marginBottom: 50 }}>
+              <Form>
+                <Text style={{ marginVertical: 10, textAlign: "center" }}>
+                  Note down any specific thoughts you have:
+                </Text>
+                <Item last={true}>
+                  <Input
+                    placeholder="Enter your thoughts"
+                    value={note}
+                    onChangeText={(text: string) =>
+                      this.setState({ note: text })
+                    }
+                  />
+                </Item>
+              </Form>
+            </View>
+          </View>
+          <Button
+            style={{ marginVertical: 10, textAlign: "center" }}
+            block={true}
+            iconLeft={true}
+            disabled={!this.canSaveLog()}
+            onPress={this.saveMoodEntry}
+          >
+            <Icon name="save" type="FontAwesome" />
+            <Text>Save Log</Text>
+          </Button>
           <SpinnerOverlay isVisible={loading} />
         </Content>
+        <Overlay
+          isVisible={inputCustomEmotion}
+          height="auto"
+          onBackdropPress={() => this.setState({ inputCustomEmotion: false })}
+        >
+          <Form>
+            <Text style={{ marginVertical: 10, textAlign: "center" }}>
+              Add a custom emotion:
+            </Text>
+            <Item>
+              <Input
+                placeholder="Emotion"
+                onChangeText={(text: string) => {
+                  this.setState({ customMood: text });
+                }}
+              />
+            </Item>
+            <View
+              style={{
+                flex: 0,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginVertical: 10,
+                textAlign: "center"
+              }}
+            >
+              <Button
+                light
+                onPress={() => this.setState({ inputCustomEmotion: false })}
+              >
+                <Text>Cancel</Text>
+              </Button>
+              <Button
+                light
+                onPress={() =>
+                  this.setState(
+                    { customMoods: [...customMoods, customMood] },
+                    () => this.setState({ inputCustomEmotion: false })
+                  )
+                }
+              >
+                <Text>Add</Text>
+              </Button>
+            </View>
+          </Form>
+        </Overlay>
+        <Overlay
+          isVisible={inputCustomExperience}
+          height="auto"
+          onBackdropPress={() =>
+            this.setState({ inputCustomExperience: false })
+          }
+        >
+          <Form>
+            <Text style={{ marginVertical: 10, textAlign: "center" }}>
+              Add a custom experience:
+            </Text>
+            <Item stackedLabel>
+              <Label>Name of experience</Label>
+              <Input
+                onChangeText={(text: string) => {
+                  this.setState({
+                    customExperience: { ...customExperience, value: text }
+                  });
+                }}
+              />
+            </Item>
+            <Item style={{ marginVertical: 10, textAlign: "center" }}>
+              <Label>Is the experience positive?</Label>
+              <CheckBox
+                onPress={() =>
+                  this.setState({
+                    customExperience: {
+                      ...customExperience,
+                      positive: !customExperience.positive
+                    }
+                  })
+                }
+                checked={customExperience.positive}
+              />
+            </Item>
+            <View
+              style={{
+                flex: 0,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginVertical: 10,
+                textAlign: "center"
+              }}
+            >
+              <Button
+                light
+                onPress={() => this.setState({ inputCustomExperience: false })}
+              >
+                <Text>Cancel</Text>
+              </Button>
+              <Button
+                light
+                onPress={() =>
+                  this.setState(
+                    {
+                      customExperiences: [
+                        ...customExperiences,
+                        customExperience
+                      ]
+                    },
+                    () => this.setState({ inputCustomExperience: false })
+                  )
+                }
+              >
+                <Text>Add</Text>
+              </Button>
+            </View>
+          </Form>
+        </Overlay>
       </Container>
     );
   }
@@ -408,8 +752,7 @@ const mapStateToProps = (state: StoreState) => ({
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>) => ({
-  addMoodEntry: (userId: string, mood: string[], date: Date, note: string) =>
-    dispatch(addLocalMoodEntry(userId, mood, date, note))
+  addMoodEntry: (moodEntry: MoodEntry) => dispatch(addLocalMoodEntry(moodEntry))
 });
 
 export default compose<React.ComponentType<any>>(

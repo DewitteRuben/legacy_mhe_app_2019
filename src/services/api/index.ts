@@ -1,33 +1,49 @@
 import fetch from "../../utils/fetch";
-const apiUrl = "http://localhost:3000/api";
+import { getJWTToken } from "../localStorage";
+import { MoodEntry } from "../../store/log";
+const apiUrl = "http://192.168.178.34:3000/api";
 
-export function getMoodEntriesByUserId(userId: string): any {
-  return fetch(`${apiUrl}/mood/${userId}`);
-}
+export const getMoodEntriesByUserId = async (userId: string) => {
+  const jwtToken = (await getJWTToken()) || "";
+
+  return fetch(`${apiUrl}/mood/${userId}`, {
+    headers: {
+      authorization: `Bearer ${jwtToken}`
+    }
+  });
+};
 
 export const getLastKnownId = async (userId: string) => {
-  const e = await fetch(`${apiUrl}/mood/last/${userId}`);
+  const jwtToken = (await getJWTToken()) || "";
+  const e = await fetch(`${apiUrl}/moodentry/last/${userId}`, {
+    headers: {
+      authorization: `Bearer ${jwtToken}`
+    }
+  });
   if (e.length) {
     return e[0].entryId;
   }
   return null;
 };
 
-export function addMoodEntry(
-  entryId: string,
-  userId: string,
-  mood: string[],
-  date: Date,
-  note: string
-): any {
+export const authClient = async (userId: string) => {
+  return fetch(`${apiUrl}/auth/client`, {
+    method: "POST",
+    body: {
+      userId
+    }
+  });
+};
+
+export const addMoodEntry = async (moodEntry: MoodEntry) => {
+  const jwtToken = (await getJWTToken()) || "";
   return fetch(`${apiUrl}/mood`, {
     method: "POST",
     body: {
-      entryId,
-      userId,
-      mood,
-      date,
-      note
+      ...moodEntry
+    },
+    headers: {
+      authorization: `Bearer ${jwtToken}`
     }
   });
-}
+};

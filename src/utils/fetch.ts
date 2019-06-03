@@ -5,13 +5,16 @@ export default (url: string, options: any = {}) => {
   // Serialize query to a query string
   let query = "";
 
+  console.log(options);
   if (options.query) {
     query = `?${queryString.stringify(options.query)}`;
     delete options.query;
   }
 
   if (options.body) {
-    options.headers = { "Content-Type": "application/json" };
+    options.headers = options.headers
+      ? { ...options.headers, "Content-Type": "application/json" }
+      : { "Content-Type": "application/json" };
     options.body = safelyStringifyJSON(options.body);
   }
 

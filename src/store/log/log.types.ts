@@ -24,11 +24,13 @@ export interface FetchMoodEntryErrorAction extends Action {
 }
 
 export interface MoodEntry {
-  entryId: string;
-  userId: string;
-  mood: string[];
   date: Date;
-  note: string;
+  userId: string;
+  entryId: string;
+  mood: string;
+  emotions: string[];
+  thoughts: string;
+  experiences: string[];
 }
 
 export interface LogState {
