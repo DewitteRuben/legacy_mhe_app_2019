@@ -8,7 +8,8 @@ import {
 import {
   clearLocalMoodEntries,
   getLocalMoodEntries,
-  setLocalMoodEntry
+  setLocalMoodEntry,
+  getUserId
 } from "../../services/localStorage";
 import { StoreState } from "../store.types";
 import {
@@ -73,10 +74,13 @@ const fetchMoodEntries = (): ThunkResult<void> => async dispatch => {
   dispatch(fetchMoodEntriesPending());
   let moodEntries = [];
   try {
-    moodEntries = await getMoodEntriesByUserId("userid");
-    dispatch(setMoodEntries(moodEntries));
-    dispatch(addAllEntriesToLocal(moodEntries));
-    dispatch(fetchMoodEntriesSuccess());
+    const userId = await getUserId();
+    if (userId && userId.length) {
+      moodEntries = await getMoodEntriesByUserId(userId);
+      dispatch(setMoodEntries(moodEntries));
+      dispatch(addAllEntriesToLocal(moodEntries));
+      dispatch(fetchMoodEntriesSuccess());
+    }
   } catch (error) {
     dispatch(fetchMoodEntriesError(error));
   }

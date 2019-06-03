@@ -10,7 +10,9 @@ import {
   Left,
   Right,
   Text as NBText,
-  Thumbnail
+  Thumbnail,
+  Spinner,
+  View
 } from "native-base";
 import React from "react";
 import { connect } from "react-redux";
@@ -20,10 +22,16 @@ import { ThunkDispatch } from "redux-thunk";
 import { Header } from "../../components";
 import TaskItem from "../../components/TaskItem";
 import { StoreState } from "../../store";
+import { getJWTToken, getUserId } from "../../services/localStorage";
+import { getTasksByUserId, toggleTask } from "../../services/api";
+import { FlatList } from "react-native";
 
 interface TasksScreenProps extends RouteComponentProps {}
 
-interface TasksScreenState {}
+interface TasksScreenState {
+  tasks: any;
+  loading: boolean;
+}
 
 class TasksScreen extends React.PureComponent<
   TasksScreenProps,
@@ -31,39 +39,73 @@ class TasksScreen extends React.PureComponent<
 > {
   constructor(props: TasksScreenProps) {
     super(props);
+    this.state = {
+      tasks: null,
+      loading: false
+    };
   }
 
-  public async componentDidMount() {}
+  public async componentDidMount() {
+    this.setState({ loading: true });
+    try {
+      const tasks = await getTasksByUserId();
+      this.setState({ tasks });
+    } catch (error) {
+    } finally {
+      this.setState({ loading: false });
+    }
+  }
 
   public render() {
+    const { tasks, loading } = this.state;
     return (
       <Container>
         <Header left={<Icon name="menu" />} right={<Icon name="settings" />} />
         <Content padder={true}>
-          <NBText style={{ fontSize: 18, fontWeight: "bold" }}>Today</NBText>
-          <TaskItem
-            isCompleted={true}
-            onCheckToggle={(state: boolean) => {
-              console.log(state);
-            }}
-            title="Write down 3 positive words"
-            details="Writing down 3 positive words about yourself,
-            is a good way to slowly increase your own self confidence"
-          />
-          <TaskItem
-            onCheckToggle={(state: boolean) => {
-              console.log(state);
-            }}
-            title="Clean up your room"
-            details="Doing basic daily tasks can help you improve your general energy levels."
-          />
-          <TaskItem
-            onCheckToggle={(state: boolean) => {
-              console.log(state);
-            }}
-            title="Remove all chips bags from bed"
-            details="love u xo"
-          />
+          {loading && (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
+              <Spinner color="blue" />
+            </View>
+          )}
+          {!loading && (
+            <React.Fragment>
+              <NBText style={{ fontSize: 18, fontWeight: "bold" }}>
+                Today
+              </NBText>
+              <FlatList
+                data={tasks}
+                contentContainerStyle={{
+                  flex: 1,
+                  flexDirection: "column"
+                }}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item, index }: any) => (
+                  <TaskItem
+                    isCompleted={item.isDone}
+                    onCheckToggle={(state: boolean) => {
+                      toggleTask(item._id, !state);
+                      this.setState({
+                        tasks: tasks.map((task: any) => {
+                          if (task._id === item._id) {
+                            item.isDone = !state;
+                          }
+                          return task;
+                        })
+                      });
+                    }}
+                    title={item.title}
+                    details={item.description}
+                  />
+                )}
+              />
+            </React.Fragment>
+          )}
         </Content>
       </Container>
     );

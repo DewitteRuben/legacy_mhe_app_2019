@@ -41,7 +41,6 @@ class LogScreen extends React.PureComponent<LogScreenProps, LogScreenState> {
   public render() {
     const { navigation, moodEntries, loading } = this.props;
 
-    console.log(moodEntries);
     return (
       <Container>
         <Header left={<Icon name="menu" />} right={<Icon name="settings" />} />

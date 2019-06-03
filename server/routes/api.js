@@ -69,6 +69,105 @@ router.get("/mood/:userId", checkToken, async (req, res) => {
   }
 });
 
+router.post("/task/:userId/toggle", checkToken, async (req, res) => {
+  const userId = req.params.userId;
+  const { taskId, value } = req.body;
+  if (userId && taskId && value !== undefined) {
+    try {
+      const decodedUserId = jwt.verify(req.token, privateKey);
+      if (decodedUserId === userId) {
+        const result = await controller.setTask(userId, taskId, value);
+        res.status(200).json(result);
+      } else {
+        res.status(500).json({
+          code: 500,
+          status: "error",
+          msg: "Id does not match id in bearer"
+        });
+      }
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  } else {
+    res
+      .status(403)
+      .json({
+        code: 403,
+        status: "error",
+        msg: "Missing paramaters",
+        body: req.body
+      });
+  }
+});
+
+router.get("/task/:userId", checkToken, async (req, res) => {
+  const userId = req.params.userId;
+  if (userId) {
+    try {
+      const decodedUserId = jwt.verify(req.token, privateKey);
+      if (decodedUserId === userId) {
+        const result = await controller.getTaskEntriesByUserId(userId);
+        res.status(200).json(result);
+      } else {
+        res.status(500).json({
+          code: 500,
+          status: "error",
+          msg: "Id does not match id in bearer"
+        });
+      }
+    } catch (err) {
+      errorLogger.error("task endpoint with userId failed to get", err);
+      res.status(500).json(err);
+    }
+  } else {
+    res
+      .status(403)
+      .json({ code: 403, status: "error", msg: "Missing paramaters" });
+  }
+});
+
+router.post("/task/:userId/", checkToken, async (req, res) => {
+  const userId = req.params.userId;
+  const body = req.body;
+
+  if (!userId) {
+    res
+      .status(403)
+      .json({ code: 403, status: "error", msg: "Missing paramaters" });
+  }
+
+  if (!body.date && !body.title && !body.description) {
+    res
+      .status(403)
+      .json({ code: 403, status: "error", msg: "Missing paramaters", body });
+  }
+
+  try {
+    const payload = jwt.verify(req.token, privateKey);
+    const client = await controller.hasProfessional(userId, payload.profId);
+    if (client) {
+      const task = {
+        userId,
+        dateOfAssignment: body.date,
+        title: body.title,
+        description: body.description
+      };
+      const result = await controller.addTask(task);
+      res.status(200).json(result);
+    } else {
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        msg: "Id does not match id in bearer"
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    errorLogger.error("mood endpoint with userId failed to get", err);
+    res.status(500).json(err);
+  }
+});
+
 router.get("/mood/:userId/:profId", checkToken, async (req, res) => {
   const profId = req.params.profId;
   const userId = req.params.userId;

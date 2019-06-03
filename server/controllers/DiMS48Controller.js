@@ -15,6 +15,22 @@ const getLatestMoodEntryByUserId = userId => {
   return getOldestEntry(defaultModels.MoodEntry, { userId }, true);
 };
 
+const getTaskEntriesByUserId = userId => {
+  return makeGetter(defaultModels.Task, { userId }, true);
+};
+
+const addTask = task => {
+  return new Promise((resolve, reject) => {
+    const newTask = new models.Task(task);
+    newTask.save((err, data) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(data);
+    });
+  });
+};
+
 const addMoodEntry = moodEntry => {
   return new Promise((resolve, reject) => {
     const newMoodEntry = new models.MoodEntry(moodEntry);
@@ -68,6 +84,10 @@ const authClient = userId => {
   return models.Client.authenticate(userId);
 };
 
+const setTask = (userId, taskId, value) => {
+  return models.Task.setTask(userId, taskId, value);
+};
+
 const registerNewClient = (profId, firstName, lastName, dateOfBirth) => {
   return new Promise((resolve, reject) => {
     const userId = uuidv4();
@@ -112,5 +132,8 @@ module.exports = {
   authClient,
   getClientsByProf,
   getClientsByUserId,
-  hasProfessional
+  hasProfessional,
+  getTaskEntriesByUserId,
+  addTask,
+  setTask
 };

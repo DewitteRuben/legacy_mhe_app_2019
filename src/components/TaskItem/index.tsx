@@ -53,7 +53,7 @@ export default class TaskItem extends React.PureComponent<
             <View style={{ flex: 1, flexDirection: "row" }}>
               <View style={{ marginRight: 25 }}>
                 <CheckBox
-                  color="green"
+                  color="blue"
                   checked={isTaskDone}
                   onPress={() => {
                     this.setState({ isTaskDone: !isTaskDone }, () => {

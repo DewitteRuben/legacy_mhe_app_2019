@@ -221,7 +221,6 @@ class AddLogScreen extends React.PureComponent<
 
     const { loading } = this.props;
 
-    console.log(customExperience);
     return (
       <Container>
         <Header

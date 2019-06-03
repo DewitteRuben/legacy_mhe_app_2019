@@ -1,5 +1,5 @@
 import fetch from "../../utils/fetch";
-import { getJWTToken } from "../localStorage";
+import { getJWTToken, getUserId } from "../localStorage";
 import { MoodEntry } from "../../store/log";
 const apiUrl = "http://192.168.178.34:3000/api";
 
@@ -31,6 +31,31 @@ export const authClient = async (userId: string) => {
     method: "POST",
     body: {
       userId
+    }
+  });
+};
+
+export const getTasksByUserId = async () => {
+  const userId = (await getUserId()) || "";
+  const jwtToken = (await getJWTToken()) || "";
+  return fetch(`${apiUrl}/task/${userId}`, {
+    headers: {
+      authorization: `Bearer ${jwtToken}`
+    }
+  });
+};
+
+export const toggleTask = async (taskId: string, value: boolean) => {
+  const jwtToken = (await getJWTToken()) || "";
+  const userId = (await getUserId()) || "";
+  return fetch(`${apiUrl}/task/${userId}/toggle`, {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${jwtToken}`
+    },
+    body: {
+      taskId,
+      value
     }
   });
 };
