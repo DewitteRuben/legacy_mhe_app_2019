@@ -9,14 +9,23 @@ const TaskSchema = new Schema({
   dateOfAssignement: { type: Date, default: new Date() },
   isDone: { type: Boolean, default: false },
   title: String,
-  description: String
+  description: String,
+  completionDate: Date
 });
+
+TaskSchema.statics.removeTask = taskId => {
+  return Task.remove({ _id: taskId });
+};
+
+TaskSchema.statics.removeByUserId = userId => {
+  return Task.remove({ userId });
+};
 
 TaskSchema.statics.setTask = (userId, taskId, value) => {
   return new Promise((s, f) => {
     Task.findOneAndUpdate(
       { userId, _id: taskId },
-      { $set: { isDone: value } }
+      { $set: { isDone: value, completionDate: value ? new Date() : "" } }
     ).exec(function(err, task) {
       if (err) {
         f(err);

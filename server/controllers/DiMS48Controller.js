@@ -31,6 +31,10 @@ const addTask = task => {
   });
 };
 
+const removeTask = taskId => {
+  return models.Task.removeTask(taskId);
+};
+
 const addMoodEntry = moodEntry => {
   return new Promise((resolve, reject) => {
     const newMoodEntry = new models.MoodEntry(moodEntry);
@@ -116,6 +120,25 @@ const getClientsByUserId = (profId, userId) => {
   return makeGetter(defaultModels.Client, { userId, profId }, true);
 };
 
+const removeClientByUserId = userId => {
+  return models.Client.removeByUserId(userId);
+};
+
+const removeAllByUserId = userId => {
+  const client = removeClientByUserId(userId);
+  const tasks = removeTaskByUserId(userId);
+  const moodEntries = removeMoodEntriesByUserId(userId);
+  return Promise.all([client, tasks, moodEntries]);
+};
+
+const removeMoodEntriesByUserId = userId => {
+  return models.MoodEntry.removeByUserId(userId);
+};
+
+const removeTaskByUserId = userId => {
+  return models.Task.removeByUserId(userId);
+};
+
 //TODO abstract to seperate file
 //Util Functions
 const makeGetter = DiMS48ControllerUtils.makeGetter;
@@ -135,5 +158,9 @@ module.exports = {
   hasProfessional,
   getTaskEntriesByUserId,
   addTask,
-  setTask
+  setTask,
+  removeTask,
+  removeTaskByUserId,
+  removeClientByUserId,
+  removeAllByUserId
 };

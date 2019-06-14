@@ -42,6 +42,10 @@ ClientSchema.statics.hasProf = function(userId, profId) {
   });
 };
 
+ClientSchema.statics.removeByUserId = userId => {
+  return Client.remove({ userId });
+};
+
 const Client = mentalHealthDatabase.model("Client", ClientSchema);
 
 module.exports = {

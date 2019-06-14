@@ -69,37 +69,6 @@ router.get("/mood/:userId", checkToken, async (req, res) => {
   }
 });
 
-router.post("/task/:userId/toggle", checkToken, async (req, res) => {
-  const userId = req.params.userId;
-  const { taskId, value } = req.body;
-  if (userId && taskId && value !== undefined) {
-    try {
-      const decodedUserId = jwt.verify(req.token, privateKey);
-      if (decodedUserId === userId) {
-        const result = await controller.setTask(userId, taskId, value);
-        res.status(200).json(result);
-      } else {
-        res.status(500).json({
-          code: 500,
-          status: "error",
-          msg: "Id does not match id in bearer"
-        });
-      }
-    } catch (err) {
-      res.status(500).json(err);
-    }
-  } else {
-    res
-      .status(403)
-      .json({
-        code: 403,
-        status: "error",
-        msg: "Missing paramaters",
-        body: req.body
-      });
-  }
-});
-
 router.get("/task/:userId", checkToken, async (req, res) => {
   const userId = req.params.userId;
   if (userId) {
@@ -126,9 +95,40 @@ router.get("/task/:userId", checkToken, async (req, res) => {
   }
 });
 
-router.post("/task/:userId/", checkToken, async (req, res) => {
+router.get("/task/:userId/:profId", checkToken, async (req, res) => {
   const userId = req.params.userId;
-  const body = req.body;
+  const profId = req.params.profId;
+
+  if (userId && profId) {
+    try {
+      const payload = jwt.verify(req.token, privateKey);
+      if (payload.profId === profId) {
+        const client = await controller.hasProfessional(userId, profId);
+        if (client) {
+          const result = await controller.getTaskEntriesByUserId(userId);
+          res.status(200).json(result);
+        }
+      } else {
+        res.status(500).json({
+          code: 500,
+          status: "error",
+          msg: "Id does not match id in bearer"
+        });
+      }
+    } catch (err) {
+      errorLogger.error("task endpoint with userId failed to get", err);
+      res.status(500).json(err);
+    }
+  } else {
+    res
+      .status(403)
+      .json({ code: 403, status: "error", msg: "Missing paramaters" });
+  }
+});
+
+router.post("/task/:userId", checkToken, async (req, res) => {
+  const userId = req.params.userId;
+  const { dateOfAssignement, title, description } = req.body;
 
   if (!userId) {
     res
@@ -136,10 +136,13 @@ router.post("/task/:userId/", checkToken, async (req, res) => {
       .json({ code: 403, status: "error", msg: "Missing paramaters" });
   }
 
-  if (!body.date && !body.title && !body.description) {
-    res
-      .status(403)
-      .json({ code: 403, status: "error", msg: "Missing paramaters", body });
+  if (!dateOfAssignement || !title || !description) {
+    res.status(403).json({
+      code: 403,
+      status: "error",
+      msg: "Missing paramaters",
+      body: req.body
+    });
   }
 
   try {
@@ -148,12 +151,71 @@ router.post("/task/:userId/", checkToken, async (req, res) => {
     if (client) {
       const task = {
         userId,
-        dateOfAssignment: body.date,
-        title: body.title,
-        description: body.description
+        dateOfAssignement,
+        title,
+        description
       };
       const result = await controller.addTask(task);
-      res.status(200).json(result);
+      res.status(200).json({ result });
+    } else {
+      res.status(500).json({
+        code: 500,
+        status: "error",
+        msg: "Id does not match id in bearer"
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    errorLogger.error("mood endpoint with userId failed to get", err);
+    res.status(500).json(err);
+  }
+});
+
+router.post("/task/:userId/toggle", checkToken, async (req, res) => {
+  const userId = req.params.userId;
+  const { taskId, value } = req.body;
+  if (userId && taskId && value !== undefined) {
+    try {
+      const decodedUserId = jwt.verify(req.token, privateKey);
+      if (decodedUserId === userId) {
+        const result = await controller.setTask(userId, taskId, value);
+        res.status(200).json(result);
+      } else {
+        res.status(500).json({
+          code: 500,
+          status: "error",
+          msg: "Id does not match id in bearer"
+        });
+      }
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  } else {
+    res.status(403).json({
+      code: 403,
+      status: "error",
+      msg: "Missing paramaters",
+      body: req.body
+    });
+  }
+});
+
+router.delete("/task/:userId/:taskId/", checkToken, async (req, res) => {
+  const taskId = req.params.taskId;
+  const userId = req.params.userId;
+
+  if (!taskId || !userId) {
+    res
+      .status(403)
+      .json({ code: 403, status: "error", msg: "Missing paramaters" });
+  }
+
+  try {
+    const payload = jwt.verify(req.token, privateKey);
+    const client = await controller.hasProfessional(userId, payload.profId);
+    if (client) {
+      const result = await controller.removeTask(taskId);
+      res.status(200).json({ result });
     } else {
       res.status(500).json({
         code: 500,
@@ -228,11 +290,13 @@ router.post("/mood", checkToken, async (req, res) => {
     body.thoughts,
     body.entryId,
     body.emotions,
-    body.experiences)
+    body.experiences,
+    body.sleep)
   ) {
     try {
       const userId = jwt.verify(req.token, privateKey);
       const moodEntry = {
+        sleep: body.sleep,
         entryId: body.entryId,
         userId,
         mood: body.mood,
@@ -412,4 +476,34 @@ router.post("/auth/professional", async (req, res) => {
   }
 });
 
-module.exports = router;
+router.delete("/client/:userId/:profId", checkToken, async (req, res) => {
+  const userId = req.params.userId;
+  const profId = req.params.profId;
+
+  if (userId && profId) {
+    try {
+      const payload = jwt.verify(req.token, privateKey);
+      if (payload.profId === profId) {
+        const client = await controller.hasProfessional(userId, profId);
+        if (client) {
+          const result = await controller.removeAllByUserId(userId);
+          res.status(200).json(result);
+        }
+      } else {
+        res.status(500).json({
+          code: 500,
+          status: "error",
+          msg: "Id does not match id in bearer"
+        });
+      }
+    } catch (err) {
+      errorLogger.error("task endpoint with userId failed to get", err);
+      res.status(500).json(err);
+    }
+  } else {
+    res
+      .status(403)
+      .json({ code: 403, status: "error", msg: "Missing paramaters" });
+  }
+}),
+  (module.exports = router);
