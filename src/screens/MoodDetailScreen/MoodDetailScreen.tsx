@@ -53,18 +53,6 @@ class MoodDetailScreen extends React.PureComponent<
         />
         <Content padder>
           <Card>
-            <CardItem header bordered>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "space-between",
-                  flexDirection: "row"
-                }}
-              >
-                <Icon type="FontAwesome" name="pencil" />
-                <Icon type="FontAwesome" name="trash-o" />
-              </View>
-            </CardItem>
             <CardItem bordered>
               <View style={{ flex: 1 }}>
                 <View style={{ marginVertical: 10 }}>
