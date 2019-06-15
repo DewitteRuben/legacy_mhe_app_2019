@@ -31,6 +31,7 @@ export interface MoodEntry {
   emotions: string[];
   thoughts: string;
   experiences: string[];
+  sleep: number;
 }
 
 export interface LogState {

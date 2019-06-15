@@ -93,8 +93,10 @@ const fetchLocalMoodEntries = (): ThunkResult<void> => async dispatch => {
     localMoodEntries = await getLocalMoodEntries();
     dispatch(setMoodEntries(localMoodEntries));
     dispatch(fetchMoodEntriesSuccess());
+    Promise.resolve();
   } catch (error) {
     dispatch(fetchMoodEntriesError(error));
+    Promise.reject();
   }
 };
 

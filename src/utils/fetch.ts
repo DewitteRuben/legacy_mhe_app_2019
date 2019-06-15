@@ -5,7 +5,6 @@ export default (url: string, options: any = {}) => {
   // Serialize query to a query string
   let query = "";
 
-  console.log(options);
   if (options.query) {
     query = `?${queryString.stringify(options.query)}`;
     delete options.query;

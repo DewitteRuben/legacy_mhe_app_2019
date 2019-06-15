@@ -1,5 +1,5 @@
 import { AddLogScreen } from "./AddLogScreen";
-import { CalendarScreen } from "./CalendarScreen";
+import { WeightScreen } from "./WeightScreen";
 import { EntryScreen } from "./EntryScreen";
 import { LogScreen } from "./LogScreen";
 import { MainScreen } from "./MainScreen";
@@ -11,6 +11,6 @@ export {
   TasksScreen,
   LogScreen,
   AddLogScreen,
-  CalendarScreen,
+  WeightScreen,
   ScanQRScreen
 };

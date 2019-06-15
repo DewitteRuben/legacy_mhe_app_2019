@@ -31,6 +31,18 @@ const addTask = task => {
   });
 };
 
+const addWeightEntry = weightEntry => {
+  return new Promise((resolve, reject) => {
+    const newWeightEntry = new models.Weight(weightEntry);
+    newWeightEntry.save((err, data) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(data);
+    });
+  });
+};
+
 const removeTask = taskId => {
   return models.Task.removeTask(taskId);
 };
@@ -112,6 +124,10 @@ const registerNewClient = (profId, firstName, lastName, dateOfBirth) => {
   });
 };
 
+const getWeightEntriesByUserId = userId => {
+  return makeGetter(defaultModels.Weight, { userId }, true);
+};
+
 const getClientsByProf = profId => {
   return makeGetter(defaultModels.Client, { profId }, true);
 };
@@ -162,5 +178,7 @@ module.exports = {
   removeTask,
   removeTaskByUserId,
   removeClientByUserId,
-  removeAllByUserId
+  removeAllByUserId,
+  getWeightEntriesByUserId,
+  addWeightEntry
 };

@@ -161,6 +161,22 @@ class MoodDetailScreen extends React.PureComponent<
                     )}
                   />
                 </View>
+                <View
+                  style={{
+                    marginVertical: 10,
+                    borderWidth: 1,
+                    borderColor: "grey",
+                    padding: 10,
+                    borderRadius: 10
+                  }}
+                >
+                  <Text style={{ marginBottom: 10, textAlign: "center" }}>
+                    Sleep:
+                  </Text>
+                  <Text style={{ textAlign: "center" }}>
+                    {moodItem.sleep} hour{moodItem.sleep !== 1 && "s"}
+                  </Text>
+                </View>
                 {moodItem.thoughts.length > 0 && (
                   <View
                     style={{
@@ -174,7 +190,9 @@ class MoodDetailScreen extends React.PureComponent<
                     <Text style={{ marginBottom: 10, textAlign: "center" }}>
                       Thoughts:
                     </Text>
-                    <Text>{moodItem.thoughts}</Text>
+                    <Text style={{ textAlign: "center" }}>
+                      {moodItem.thoughts}
+                    </Text>
                   </View>
                 )}
               </View>

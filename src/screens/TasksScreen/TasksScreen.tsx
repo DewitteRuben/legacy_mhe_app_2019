@@ -22,9 +22,9 @@ import { ThunkDispatch } from "redux-thunk";
 import { Header } from "../../components";
 import TaskItem from "../../components/TaskItem";
 import { StoreState } from "../../store";
-import { getJWTToken, getUserId } from "../../services/localStorage";
 import { getTasksByUserId, toggleTask } from "../../services/api";
-import { FlatList } from "react-native";
+import { FlatList, RefreshControl } from "react-native";
+import moment from "moment";
 
 interface TasksScreenProps extends RouteComponentProps {}
 
@@ -45,7 +45,7 @@ class TasksScreen extends React.PureComponent<
     };
   }
 
-  public async componentDidMount() {
+  public loadTasks = async () => {
     this.setState({ loading: true });
     try {
       const tasks = await getTasksByUserId();
@@ -54,58 +54,89 @@ class TasksScreen extends React.PureComponent<
     } finally {
       this.setState({ loading: false });
     }
+  };
+
+  public async componentDidMount() {
+    this.loadTasks();
   }
 
+  public getTaskData = () => {
+    const { tasks } = this.state;
+    let groupedTasks: any = [];
+    if (tasks) {
+      tasks.sort((a: any, b: any) => {
+        const bTime = new Date(b.dateOfAssignement);
+        const aTime = new Date(a.dateOfAssignement);
+        const day = moment(bTime)
+          .calendar()
+          .split(" ")[0];
+        const today = moment(new Date())
+          .calendar()
+          .split(" ")[0];
+        if (day === today) {
+          return 1;
+        }
+        return bTime.valueOf() - aTime.valueOf();
+      });
+      tasks.forEach((task: any) => {
+        const time = new Date(task.dateOfAssignement);
+        const day = moment(time)
+          .calendar()
+          .split(" ")[0];
+        // get existing group
+        const existingGroup = groupedTasks.filter(
+          (group: any) => group.label === day
+        )[0];
+        if (existingGroup) {
+          existingGroup.tasks.push(task);
+        } else {
+          const group = { label: day, tasks: [task] };
+          groupedTasks.push(group);
+        }
+      });
+    }
+    return groupedTasks;
+  };
+
   public render() {
-    const { tasks, loading } = this.state;
+    const { loading } = this.state;
     return (
       <Container>
-        <Header left={<Icon name="menu" />} right={<Icon name="settings" />} />
-        <Content padder={true}>
-          {loading && (
-            <View
-              style={{
+        <Header />
+        <Content
+          refreshControl={
+            <RefreshControl refreshing={loading} onRefresh={this.loadTasks} />
+          }
+          padder={true}
+        >
+          <React.Fragment>
+            <FlatList
+              data={this.getTaskData()}
+              contentContainerStyle={{
                 flex: 1,
-                justifyContent: "center",
-                alignItems: "center"
+                flexDirection: "column"
               }}
-            >
-              <Spinner color="blue" />
-            </View>
-          )}
-          {!loading && (
-            <React.Fragment>
-              <NBText style={{ fontSize: 18, fontWeight: "bold" }}>
-                Today
-              </NBText>
-              <FlatList
-                data={tasks}
-                contentContainerStyle={{
-                  flex: 1,
-                  flexDirection: "column"
-                }}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item, index }: any) => (
-                  <TaskItem
-                    isCompleted={item.isDone}
-                    onCheckToggle={(state: boolean) => {
-                      toggleTask(item._id, !state);
-                      this.setState({
-                        tasks: tasks.map((task: any) => {
-                          if (task._id === item._id) {
-                            item.isDone = !state;
-                          }
-                          return task;
-                        })
-                      });
-                    }}
-                    title={item.title}
-                    details={item.description}
-                  />
-                )}
-              />
-            </React.Fragment>
-          )}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item, index }: any) => (
+                <React.Fragment>
+                  <NBText style={{ fontSize: 18, fontWeight: "bold" }}>
+                    {item.label}
+                  </NBText>
+                  {item.tasks.map((task: any, index: any) => (
+                    <TaskItem
+                      key={index}
+                      isCompleted={task.isDone}
+                      onCheckToggle={(state: boolean) => {
+                        toggleTask(task._id, state);
+                      }}
+                      title={task.title}
+                      details={task.description}
+                    />
+                  ))}
+                </React.Fragment>
+              )}
+            />
+          </React.Fragment>
         </Content>
       </Container>
     );

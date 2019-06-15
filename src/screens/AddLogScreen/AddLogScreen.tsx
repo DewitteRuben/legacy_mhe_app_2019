@@ -29,13 +29,6 @@ import {
   MoodEntry
 } from "../../store/log";
 import { StoreState } from "../../store/store.types";
-import {
-  SmileyVeryBad,
-  SmileyBad,
-  SmileyGood,
-  SmileyVeryGood,
-  SmileyModerate
-} from "../../components/icons";
 import { BorderRadius } from "../../styles";
 import Smiley from "../../components/Smiley";
 import ExperienceItem from "../../components/ExperienceItem";
@@ -62,6 +55,7 @@ interface AddLogScreenState {
   inputCustomExperience: boolean;
   customExperience: any;
   customExperiences: any[];
+  sleep: number;
 }
 
 const initialState = () => ({
@@ -78,7 +72,8 @@ const initialState = () => ({
   selectedExperiences: [],
   inputCustomExperience: false,
   customExperience: { value: "", positive: false },
-  customExperiences: []
+  customExperiences: [],
+  sleep: 0
 });
 
 class AddLogScreen extends React.PureComponent<
@@ -156,11 +151,13 @@ class AddLogScreen extends React.PureComponent<
       selectedDate,
       selectedSmiley,
       note,
-      selectedExperiences
+      selectedExperiences,
+      sleep
     } = this.state;
     const { navigation, addMoodEntry } = this.props;
-    if (selectedMoods.length && selectedSmiley.length) {
+    if (selectedMoods.length && selectedSmiley.length && sleep > 0) {
       const moodEntry = {
+        sleep,
         mood: selectedSmiley,
         thoughts: note,
         date: selectedDate,
@@ -185,14 +182,16 @@ class AddLogScreen extends React.PureComponent<
       selectedMood,
       selectedEnergy,
       selectedMoods,
-      selectedSmiley
+      selectedSmiley,
+      sleep
     } = this.state;
 
     return (
       selectedMood.length > 0 &&
       selectedEnergy.length > 0 &&
       selectedMoods.length > 0 &&
-      selectedSmiley.length > 0
+      selectedSmiley.length > 0 &&
+      sleep > 0
     );
   };
 
@@ -201,6 +200,21 @@ class AddLogScreen extends React.PureComponent<
     stateObject[name] = state;
     stateObject.selectedMoods = [];
     this.setState(stateObject);
+  };
+
+  public setSleep = (text: string) => {
+    const numreg = /^[0-9]+$/;
+    if (numreg.test(text) || text === "") {
+      const hours = text === "" ? 0 : parseInt(text);
+      if (hours <= 24) {
+        this.setState({ sleep: hours });
+      } else {
+        Alert.alert(
+          "Mental Health App",
+          "The amount of sleep a day cannot exceed 24 hours."
+        );
+      }
+    }
   };
 
   public render() {
@@ -216,7 +230,8 @@ class AddLogScreen extends React.PureComponent<
       selectedSmiley,
       inputCustomExperience,
       customExperiences,
-      customExperience
+      customExperience,
+      sleep
     } = this.state;
 
     const { loading } = this.props;
@@ -556,6 +571,7 @@ class AddLogScreen extends React.PureComponent<
             <View style={{ padding: 10 }}>
               <FlatList
                 data={this.getRelevantExperiences()}
+                keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, index }) => (
                   <ExperienceItem
                     key={index}
@@ -575,6 +591,44 @@ class AddLogScreen extends React.PureComponent<
                 <Icon type="MaterialIcons" name="add" />
                 <Text>Add experience</Text>
               </Button>
+            </View>
+          </View>
+          <View
+            style={{
+              marginVertical: 10,
+              textAlign: "center",
+              borderWidth: 1,
+              borderColor: "grey",
+              padding: 10,
+              borderRadius: 10
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                textAlign: "center",
+                marginTop: 10
+              }}
+            >
+              Sleep
+            </Text>
+
+            <View style={{ marginBottom: 50 }}>
+              <Form>
+                <Text style={{ marginVertical: 10, textAlign: "center" }}>
+                  Enter your hours of sleep today:
+                </Text>
+                <Item last={true}>
+                  <Input
+                    keyboardType="numeric"
+                    placeholder="Enter your hours of sleep"
+                    maxLength={2}
+                    value={sleep === 0 ? "" : sleep.toString()}
+                    onChangeText={this.setSleep}
+                  />
+                </Item>
+              </Form>
             </View>
           </View>
           <View

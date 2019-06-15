@@ -8,6 +8,7 @@ import AppNavigator from "./navigators";
 import { clearLocalMoodEntries } from "./services/localStorage";
 import SyncManager from "./services/syncManager";
 import { StoreState } from "./store/store.types";
+import PushService from './services/pushService';
 
 interface AppProps extends RouteComponentProps {
   route?: RouteConfig;
@@ -25,10 +26,13 @@ const listener = (data: NetInfoData) => {
 
 NetInfo.getConnectionInfo().then(listener);
 
+const pushService = new PushService();
 const syncManager = new SyncManager();
 global.syncManager = syncManager;
+global.pushService = pushService;
 syncManager.start();
 syncManager.sync();
+pushService.init();
 
 const subscription = NetInfo.addEventListener("connectionChange", listener);
 

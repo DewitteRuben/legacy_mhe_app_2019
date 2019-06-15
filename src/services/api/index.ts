@@ -1,7 +1,7 @@
 import fetch from "../../utils/fetch";
 import { getJWTToken, getUserId } from "../localStorage";
 import { MoodEntry } from "../../store/log";
-const apiUrl = "http://192.168.178.34:3000/api";
+const apiUrl = "http://192.168.1.5:3000/api";
 
 export const getMoodEntriesByUserId = async (userId: string) => {
   const jwtToken = (await getJWTToken()) || "";
@@ -67,6 +67,30 @@ export const addMoodEntry = async (moodEntry: MoodEntry) => {
     body: {
       ...moodEntry
     },
+    headers: {
+      authorization: `Bearer ${jwtToken}`
+    }
+  });
+};
+
+export const addWeightEntry = async (weightEntry: any) => {
+  const jwtToken = (await getJWTToken()) || "";
+  return fetch(`${apiUrl}/weight`, {
+    method: "POST",
+    body: {
+      ...weightEntry
+    },
+    headers: {
+      authorization: `Bearer ${jwtToken}`
+    }
+  });
+};
+
+export const getWeightEntriesByUserId = async () => {
+  const jwtToken = (await getJWTToken()) || "";
+  const userId = (await getUserId()) || "";
+
+  return fetch(`${apiUrl}/weight/${userId}`, {
     headers: {
       authorization: `Bearer ${jwtToken}`
     }

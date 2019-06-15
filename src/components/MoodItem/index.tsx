@@ -22,8 +22,6 @@ interface MoodItemProps {
   onPress?: () => void;
 }
 
-
-
 export default class MoodItem extends React.PureComponent<MoodItemProps> {
   constructor(props: MoodItemProps) {
     super(props);
@@ -93,12 +91,17 @@ export default class MoodItem extends React.PureComponent<MoodItemProps> {
               <View>
                 <Smiley text={mood} icon={mood} />
               </View>
-              <View style={{ marginLeft: 20 }}>
+              <View style={{ marginLeft: 20, flex: 1 }}>
                 <Text note={true}>
                   {moment(new Date(logDate)).format("MMM Do YYYY, HH:mm")}
                 </Text>
                 <Text>{emotions.sort().join(", ")}</Text>
-                <Text note={true} style={{ marginVertical: 10 }}>
+                <Text
+                  note={true}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={{ marginVertical: 10 }}
+                >
                   {thoughts}
                 </Text>
               </View>
@@ -107,7 +110,9 @@ export default class MoodItem extends React.PureComponent<MoodItemProps> {
               style={{
                 flex: 0,
                 flexDirection: "column",
-                alignItems: "center"
+                alignItems: "center",
+                position: "relative",
+                right: 25
               }}
             >
               <Icon

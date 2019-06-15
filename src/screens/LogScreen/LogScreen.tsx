@@ -1,6 +1,22 @@
-import { Button, Container, Content, Icon, Spinner, Text } from "native-base";
+import {
+  Button,
+  Container,
+  Content,
+  Icon,
+  Spinner,
+  Text,
+  Card,
+  CardItem
+} from "native-base";
 import React, { Fragment } from "react";
-import { Alert, FlatList, Platform, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  FlatList,
+  Platform,
+  StyleSheet,
+  View,
+  RefreshControl
+} from "react-native";
 import { connect } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
 import { compose, Dispatch } from "redux";
@@ -23,8 +39,6 @@ interface LogScreenProps extends RouteComponentProps {
 }
 
 interface LogScreenState {
-  finished: boolean;
-  loading: boolean;
   error: any;
 }
 
@@ -34,21 +48,49 @@ class LogScreen extends React.PureComponent<LogScreenProps, LogScreenState> {
   }
 
   public async componentDidMount() {
-    const { fetchAllMoodEntries } = this.props;
-    fetchAllMoodEntries();
+    this.loadMoodEntries();
   }
+
+  public loadMoodEntries = async () => {
+    const { fetchAllMoodEntries } = this.props;
+    await fetchAllMoodEntries();
+  };
 
   public render() {
     const { navigation, moodEntries, loading } = this.props;
 
     return (
       <Container>
-        <Header left={<Icon name="menu" />} right={<Icon name="settings" />} />
-        <Content scrollEnabled padder={true}>
-          {moodEntries.length > 0 && !loading && (
+        <Header
+          left={
+            <Icon
+              name="weight"
+              type="FontAwesome5"
+              onPress={() => navigation.navigate("Weight")}
+            />
+          }
+          right={
+            <Icon name="add" onPress={() => navigation.navigate("AddLog")} />
+          }
+        />
+        <Content
+          scrollEnabled
+          padder={true}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={this.loadMoodEntries}
+            />
+          }
+        >
+          {moodEntries.length > 0 && (
             <View>
               <FlatList
-                data={moodEntries}
+                data={moodEntries.sort((a, b) => {
+                  return (
+                    new Date(b.date).getTime() - new Date(a.date).getTime()
+                  );
+                })}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }: { item: any }) => (
                   <MoodItem
@@ -65,20 +107,20 @@ class LogScreen extends React.PureComponent<LogScreenProps, LogScreenState> {
               />
             </View>
           )}
-          {loading && (
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                flex: 1
-              }}
-            >
-              <Spinner color="blue" />
-            </View>
+          {moodEntries.length === 0 && (
+            <Card>
+              <CardItem>
+                <Text>
+                  Press the{" "}
+                  <Icon
+                    name="add"
+                    onPress={() => navigation.navigate("AddLog")}
+                  />{" "}
+                  button in the top right corner to add a mood entry.
+                </Text>
+              </CardItem>
+            </Card>
           )}
-          <Button onPress={() => navigation.navigate("AddLog")}>
-            <Text>Add Log</Text>
-          </Button>
         </Content>
       </Container>
     );

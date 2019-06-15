@@ -69,6 +69,58 @@ router.get("/mood/:userId", checkToken, async (req, res) => {
   }
 });
 
+router.post("/weight", checkToken, async (req, res) => {
+  const { entryId, amount, unit } = req.body;
+  if ((entryId, amount, unit)) {
+    try {
+      const userId = jwt.verify(req.token, privateKey);
+      const weightEntry = {
+        entryId,
+        userId,
+        amount,
+        unit
+      };
+      const result = await controller.addWeightEntry(weightEntry);
+      res.json(result);
+    } catch (err) {
+      errorLogger.error("weight endpoint failed to post new weightEntry", err);
+      res.status(500).json(err);
+    }
+  } else {
+    res.status(422).json({
+      status: "error",
+      msg: "Invalid or missing paramater",
+      code: 422
+    });
+  }
+});
+
+router.get("/weight/:userId", checkToken, async (req, res) => {
+  const userId = req.params.userId;
+  if (userId) {
+    try {
+      const decodedUserId = jwt.verify(req.token, privateKey);
+      if (decodedUserId === userId) {
+        const result = await controller.getWeightEntriesByUserId(userId);
+        res.status(200).json(result);
+      } else {
+        res.status(500).json({
+          code: 500,
+          status: "error",
+          msg: "Id does not match id in bearer"
+        });
+      }
+    } catch (err) {
+      errorLogger.error("weight endpoint with userId failed to get", err);
+      res.status(500).json(err);
+    }
+  } else {
+    res
+      .status(403)
+      .json({ code: 403, status: "error", msg: "Missing paramaters" });
+  }
+});
+
 router.get("/task/:userId", checkToken, async (req, res) => {
   const userId = req.params.userId;
   if (userId) {
@@ -251,6 +303,36 @@ router.get("/mood/:userId/:profId", checkToken, async (req, res) => {
       }
     } catch (err) {
       errorLogger.error("mood endpoint with userId failed to get", err);
+      res.status(500).json(err);
+    }
+  } else {
+    res
+      .status(403)
+      .json({ code: 403, status: "error", msg: "Missing paramaters" });
+  }
+});
+
+router.get("/weight/:userId/:profId", checkToken, async (req, res) => {
+  const profId = req.params.profId;
+  const userId = req.params.userId;
+  if (userId && profId) {
+    try {
+      const payload = jwt.verify(req.token, privateKey);
+      if (payload.profId === profId) {
+        const client = await controller.hasProfessional(userId, profId);
+        if (client) {
+          const result = await controller.getWeightEntriesByUserId(userId);
+          res.status(200).json(result);
+        }
+      } else {
+        res.status(500).json({
+          code: 500,
+          status: "error",
+          msg: "Id does not match id in bearer"
+        });
+      }
+    } catch (err) {
+      errorLogger.error("weight endpoint with userId failed to get", err);
       res.status(500).json(err);
     }
   } else {
