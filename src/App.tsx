@@ -30,8 +30,6 @@ const pushService = new PushService();
 const syncManager = new SyncManager();
 global.syncManager = syncManager;
 global.pushService = pushService;
-syncManager.start();
-syncManager.sync();
 pushService.init();
 
 const subscription = NetInfo.addEventListener("connectionChange", listener);

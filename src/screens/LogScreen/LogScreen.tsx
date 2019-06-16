@@ -30,6 +30,7 @@ import {
   MoodEntry
 } from "../../store/log";
 import { StoreState } from "../../store/store.types";
+import SyncManager from "../../services/syncManager";
 
 interface LogScreenProps extends RouteComponentProps {
   navigation: any;
@@ -48,6 +49,8 @@ class LogScreen extends React.PureComponent<LogScreenProps, LogScreenState> {
   }
 
   public async componentDidMount() {
+    global.syncManager.start();
+    global.syncManager.sync();
     this.loadMoodEntries();
   }
 
